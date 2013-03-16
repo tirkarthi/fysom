@@ -37,8 +37,8 @@ use_plugin('python.distutils')
 use_plugin('python.unittest')
 use_plugin('python.flake8')
 
-authors = [Author('Mansour Behabadi'),
-           Author('Jake Gordon')]
+authors = [Author('Mansour Behabadi', '@oxplot'),
+           Author('Jake Gordon', 'jake@codeincomplete.com')]
 license = 'MIT'
 name = 'fysom'
 url = 'https://github.com/oxplot/fysom'
