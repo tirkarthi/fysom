@@ -11,6 +11,7 @@ pip install fysom
 ```
 
 ## Developer setup
+This module uses the [pythonbuilder](http://pybuilder.github.com).
 ```bash
 git clone https://github.com/mriehl/fysom
 cd fysom
