@@ -7,5 +7,5 @@ python:
 install:
   - pip install pybuilder --use-mirrors
   - pyb --debug install_dependencies
-script: "pyb --debug -v"
+script: "PYTHONPATH=src/main/python pyb --debug -v"
 
