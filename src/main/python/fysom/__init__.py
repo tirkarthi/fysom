@@ -117,7 +117,7 @@ class Fysom(object):
                 setattr(e, k, kwargs[k])
 
             if self.current != dst:
-                if self._before_event(e) == False:
+                if self._before_event(e) is False:
                     return
 
                 def _tran():
@@ -128,7 +128,7 @@ class Fysom(object):
                     self._after_event(e)
                 self.transition = _tran
 
-            if self._leave_state(e) != False:
+            if self._leave_state(e) is not False:
                 if hasattr(self, 'transition'):
                     self.transition()
 
