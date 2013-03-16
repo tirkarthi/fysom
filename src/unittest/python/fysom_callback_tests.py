@@ -148,3 +148,31 @@ class FysomCallbackTests(unittest.TestCase):
         self.assertTrue(hasattr(self, 'leave_fooed_event'), 'Callback onleavefooed did not fire.')
         self.assertTrue(self.leave_fooed_event is not None)
         self.assertEqual(self.leave_fooed_event.id, 123)
+
+    def test_onchangestate_should_fire_for_all_state_changes(self):
+        def on_change_state(e):
+            self.current_event = e
+        fsm = Fysom({
+            'initial': 'foo',
+            'events': [
+                {'name': 'footobar', 'src': 'foo', 'dst': 'bar'},
+                {'name': 'bartobaz', 'src': 'bar', 'dst': 'baz'},
+            ],
+            'callbacks': {
+                'onchangestate': on_change_state
+            }
+        })
+
+        fsm.footobar(id=123)
+        self.assertEqual(self.current_event.event, 'footobar')
+        self.assertEqual(self.current_event.src, 'foo')
+        self.assertEqual(self.current_event.dst, 'bar')
+        self.assertEqual(self.current_event.id, 123)
+        self.assertTrue(self.current_event.fsm is fsm)
+
+        fsm.bartobaz(attribute='test')
+        self.assertEqual(self.current_event.event, 'bartobaz')
+        self.assertEqual(self.current_event.src, 'bar')
+        self.assertEqual(self.current_event.dst, 'baz')
+        self.assertEqual(self.current_event.attribute, 'test')
+        self.assertTrue(self.current_event.fsm is fsm)
