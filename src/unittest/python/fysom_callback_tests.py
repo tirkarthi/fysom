@@ -41,6 +41,11 @@ class FysomCallbackTests(unittest.TestCase):
         self.before_bar_event = e
         self.fired_callbacks.append('before_bar')
 
+    def before_wait(self, e):
+        self.before_wait_event = e
+        self.fired_callbacks.append('before_wait')
+        return False
+
     def on_foo(self, e):
         self.foo_event = e
         self.fired_callbacks.append('after_foo')
@@ -73,6 +78,7 @@ class FysomCallbackTests(unittest.TestCase):
                 {'name': 'foo', 'src': 'sleeping', 'dst': 'fooed'},
                 {'name': 'bar', 'src': 'fooed', 'dst': 'bared'},
                 {'name': 'baz', 'src': 'bared', 'dst': 'bazed'},
+                {'name': 'wait', 'src': 'sleeping', 'dst': 'waiting'}
                 ],
             'callbacks': {
                 'onfoo': self.on_foo,
@@ -80,6 +86,7 @@ class FysomCallbackTests(unittest.TestCase):
                 'onbaz': self.on_baz,
                 'onbeforefoo': self.before_foo,
                 'onbeforebar': self.before_bar,
+                'onbeforewait': self.before_wait,
                 'onenterfooed': self.on_enter_fooed,
                 'onenterbared': self.on_enter_bared,
                 'onleavesleeping': self.on_leave_sleeping,
@@ -115,6 +122,11 @@ class FysomCallbackTests(unittest.TestCase):
         self.assertEqual(self.before_bar_event.id, 123)
         self.assertEqual(['before_foo', 'after_foo', 'before_bar', 'after_bar'], self.fired_callbacks)
 
+    def test_fsm_cancel_transition_when_onbefore_event_callbacks_return_false(self):
+        self.fsm.wait()
+        self.assertEqual(self.fsm.current, 'sleeping')
+
+
     def test_onenter_state_callbacks_should_fire_with_keyword_arguments_when_state_transitions_occur(self):
         self.fsm.foo(attribute='test')
         self.assertTrue(hasattr(self, 'enter_fooed_event'), 'Callback onenterfooed did not fire.')
@@ -136,4 +148,3 @@ class FysomCallbackTests(unittest.TestCase):
         self.assertTrue(hasattr(self, 'leave_fooed_event'), 'Callback onleavefooed did not fire.')
         self.assertTrue(self.leave_fooed_event is not None)
         self.assertEqual(self.leave_fooed_event.id, 123)
-
