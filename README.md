@@ -93,12 +93,12 @@ shoot yourself in the foot if you're not careful.
 
 Callbacks can be specified when the state machine is first created:
 
+```python
 def onpanic(e): print 'panic! ' + e.msg
 def oncalm(e): print 'thanks to ' + e.msg
 def ongreen(e): print 'green'
 def onyellow(e): print 'yellow'
 def onred(e): print 'red'
-```python
 fsm = Fysom({
   'initial': 'green',
   'events': [
