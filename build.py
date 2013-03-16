@@ -1,3 +1,4 @@
+# coding=utf-8
 #
 # fysom.py - pYthOn Finite State Machine - this is a port of Jake
 #            Gordon's javascript-state-machine to python
