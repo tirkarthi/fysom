@@ -240,12 +240,12 @@ class FysomCallbackTests(unittest.TestCase):
     def test_callbacks_should_fire_with_keyword_arguments_when_events_occur(self):
         self.fsm.foo(attribute='test')
         self.assertTrue(hasattr(self, 'foo_event'), 'Callback on_foo did not fire.')
-        self.assertIsNotNone(self.foo_event)
+        self.assertTrue(self.foo_event is not None)
         self.assertEqual(self.foo_event.attribute, 'test')
 
         self.fsm.bar(id=123)
         self.assertTrue(hasattr(self, 'bar_event'), 'Callback on_bar did not fire.')
-        self.assertIsNotNone(self.bar_event)
+        self.assertTrue(self.bar_event is not None)
         self.assertEqual(self.bar_event.id, 123)
 
     def test_callbacks_raising_exceptions_should_not_be_eaten(self):
