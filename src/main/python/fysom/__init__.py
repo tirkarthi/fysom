@@ -1,4 +1,4 @@
-from fysom import Fysom, FysomError
+from finite_state_machine import Fysom, FysomError
 
 __author__ = 'Mansour Behabadi'
 __copyright__ = 'Copyright 2011, Mansour Behabadi and Jake Gordon'
