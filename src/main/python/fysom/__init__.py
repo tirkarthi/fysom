@@ -34,8 +34,6 @@ __version__ = '${version}'
 __maintainer__ = 'Mansour Behabadi'
 __email__ = 'mansour@oxplot.com'
 
-import types
-
 try:
     unicode = unicode
 except NameError:
