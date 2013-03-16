@@ -8,5 +8,5 @@ before_script: sudo apt-get install pychecker pylint pep8 rpm python-rpm
 install:
   - pip install pybuilder --use-mirrors
   - pyb --debug install_dependencies
-script: "pyb --debug -v"
+script: "pyb --debug -v verify"
 
