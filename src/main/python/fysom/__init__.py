@@ -26,7 +26,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-from __future__ import unicode_literals
 
 __author__ = 'Mansour Behabadi'
 __copyright__ = 'Copyright 2011, Mansour Behabadi and Jake Gordon'
@@ -58,7 +57,7 @@ class Fysom(object):
 
     def _apply(self, cfg):
         init = cfg['initial'] if 'initial' in cfg else None
-        if isinstance(init, basestring):
+        if self._is_base_string(init):
             init = {'state': init}
         events = cfg['events'] if 'events' in cfg else []
         callbacks = cfg['callbacks'] if 'callbacks' in cfg else {}
@@ -66,7 +65,7 @@ class Fysom(object):
         self._map = tmap
 
         def add(e):
-            src = [e['src']] if isinstance(e['src'], basestring) else e['src']
+            src = [e['src']] if self._is_base_string(e['src']) else e['src']
             if e['name'] not in tmap:
                 tmap[e['name']] = {}
             for s in src:
@@ -152,3 +151,9 @@ class Fysom(object):
         fnname = 'onchangestate'
         if hasattr(self, fnname):
             return getattr(self, fnname)(e)
+
+    def _is_base_string(self, object):
+        try:
+            return isinstance(object, basestring)
+        except NameError:
+            return isinstance(object, str)
