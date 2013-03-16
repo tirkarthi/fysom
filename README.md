@@ -7,7 +7,7 @@ All credits go to Jake Gordon for the [original javascript implementation](https
 # Synopsis
 This is basically Mansours' implementation.
 *But with 100% unittest coverage*, so you can actually modify the source.
-It's also on PyPi (```pip install fysom```) so you don't need to copy his source and you get updates/bugfixes easily,
+It's also on PyPi (```pip install fysom```) so you don't need to copy his source and get updates/bugfixes easily,
 and has a fully-fledged module structure.
 
 # Installation
@@ -41,6 +41,12 @@ pyb verify
 pyb
 cd target/dist/fysom-1.0.1
 ./setup.py <whatever you want>
+```
+
+## Looking at the coverage
+```bash
+pyb
+cat target/reports/coverage
 ```
 
 # USAGE
