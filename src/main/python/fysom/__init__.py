@@ -157,6 +157,3 @@ class Fysom(object):
         fnname = 'onchangestate'
         if hasattr(self, fnname):
             return getattr(self, fnname)(e)
-
-if __name__ == '__main__':
-    pass
