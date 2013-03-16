@@ -2,7 +2,7 @@
 
 # License
 MIT licensed.
-All credits go to Jake Gordon for the [original javascript implementation](https://github.com/jakesgordon/javascript-state-machine/) and to Mansour Behabadi for the [python port](https://github.com/oxplot/fysom)
+All credits go to Jake Gordon for the [original javascript implementation](https://github.com/jakesgordon/javascript-state-machine/) and to Mansour Behabadi for the [python port](https://github.com/oxplot/fysom).
 
 # Installation
 ## From your friendly neighbourhood cheeseshop
@@ -18,6 +18,10 @@ virtualenv venv
 . venv/bin/activate
 pip install pybuilder
 pyb install_dependencies
+```
+Or you could use [pyb_init](https://github.com/mriehl/pyb_init) and run
+```bash
+pyb_init https://github.com/mriehl/fysom
 ```
 
 ## Running the tests
