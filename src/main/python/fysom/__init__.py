@@ -152,7 +152,7 @@ class Fysom(object):
         if hasattr(self, fnname):
             return getattr(self, fnname)(e)
 
-    def _is_base_string(self, object):
+    def _is_base_string(self, object):  # pragma: no cover
         try:
             return isinstance(object, basestring)
         except NameError:
