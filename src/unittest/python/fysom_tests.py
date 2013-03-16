@@ -25,3 +25,24 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
+
+import unittest
+
+from fysom import Fysom
+
+
+class FysomStateTests(unittest.TestCase):
+
+    def setUp(self):
+        self.fsm = Fysom({
+            'initial': 'green',
+            'events': [
+                {'name': 'warn',  'src': 'green',  'dst': 'yellow'},
+                {'name': 'panic', 'src': 'yellow', 'dst': 'red'},
+                {'name': 'calm',  'src': 'red',    'dst': 'yellow'},
+                {'name': 'clear', 'src': 'yellow', 'dst': 'green'}
+            ]
+        })
+
+    def test_initial_state_should_be_green(self):
+        self.assertEqual(self.fsm.current, 'green')
