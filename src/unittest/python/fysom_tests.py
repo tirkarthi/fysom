@@ -232,6 +232,12 @@ class FysomCallbackTests(unittest.TestCase):
     def on_baz(self, e):
         raise ValueError('Baz-inga!')
 
+    def on_enter_fooed(self, e):
+        self.enter_fooed_event = e
+
+    def on_enter_bared(self, e):
+        self.enter_bared_event = e
+
     def setUp(self):
         self.fired_callbacks = []
 
@@ -247,7 +253,9 @@ class FysomCallbackTests(unittest.TestCase):
                 'onbar': self.on_bar,
                 'onbaz': self.on_baz,
                 'onbeforefoo': self.before_foo,
-                'onbeforebar': self.before_bar
+                'onbeforebar': self.before_bar,
+                'onenterfooed': self.on_enter_fooed,
+                'onenterbared': self.on_enter_bared
             }
         })
 
@@ -277,3 +285,14 @@ class FysomCallbackTests(unittest.TestCase):
         self.assertTrue(self.before_bar_event is not None)
         self.assertEqual(self.before_bar_event.id, 123)
         self.assertEqual(['before_foo', 'after_foo', 'before_bar', 'after_bar'], self.fired_callbacks)
+
+    def test_onenter_state_callbacks_should_fire_with_keyword_arguments_when_state_transitions_occur(self):
+        self.fsm.foo(attribute='test')
+        self.assertTrue(hasattr(self, 'enter_fooed_event'), 'Callback onenterfooed did not fire.')
+        self.assertTrue(self.enter_fooed_event is not None)
+        self.assertEqual(self.enter_fooed_event.attribute, 'test')
+
+        self.fsm.bar(id=123)
+        self.assertTrue(hasattr(self, 'enter_bared_event'), 'Callback onenterbared did not fire.')
+        self.assertTrue(self.enter_bared_event is not None)
+        self.assertEqual(self.enter_bared_event.id, 123)
