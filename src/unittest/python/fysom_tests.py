@@ -33,14 +33,13 @@ from fysom import Fysom, FysomError
 
 
 class FysomStateTests(unittest.TestCase):
-
     def setUp(self):
         self.fsm = Fysom({
             'initial': 'green',
             'events': [
-                {'name': 'warn',  'src': 'green',  'dst': 'yellow'},
+                {'name': 'warn', 'src': 'green', 'dst': 'yellow'},
                 {'name': 'panic', 'src': 'yellow', 'dst': 'red'},
-                {'name': 'calm',  'src': 'red',    'dst': 'yellow'},
+                {'name': 'calm', 'src': 'red', 'dst': 'yellow'},
                 {'name': 'clear', 'src': 'yellow', 'dst': 'green'}
             ]
         })
@@ -66,14 +65,13 @@ class FysomStateTests(unittest.TestCase):
 
 
 class FysomManyToManyTransitionTests(unittest.TestCase):
-
     def test_rest_should_always_transition_to_hungry_state(self):
         fsm = Fysom({
             'initial': 'hungry',
             'events': [
-                {'name': 'eat',  'src': 'hungry',    'dst': 'satisfied'},
-                {'name': 'eat',  'src': 'satisfied', 'dst': 'full'},
-                {'name': 'eat',  'src': 'full',      'dst': 'sick'},
+                {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                {'name': 'eat', 'src': 'full', 'dst': 'sick'},
                 {'name': 'rest', 'src': ['hungry', 'satisfied', 'full', 'sick'],
                  'dst': 'hungry'}
             ]
@@ -84,9 +82,9 @@ class FysomManyToManyTransitionTests(unittest.TestCase):
         fsm = Fysom({
             'initial': 'satisfied',
             'events': [
-                {'name': 'eat',  'src': 'hungry',    'dst': 'satisfied'},
-                {'name': 'eat',  'src': 'satisfied', 'dst': 'full'},
-                {'name': 'eat',  'src': 'full',      'dst': 'sick'},
+                {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                {'name': 'eat', 'src': 'full', 'dst': 'sick'},
                 {'name': 'rest', 'src': ['hungry', 'satisfied', 'full', 'sick'],
                  'dst': 'hungry'}
             ]
@@ -97,9 +95,9 @@ class FysomManyToManyTransitionTests(unittest.TestCase):
         fsm = Fysom({
             'initial': 'full',
             'events': [
-                {'name': 'eat',  'src': 'hungry',    'dst': 'satisfied'},
-                {'name': 'eat',  'src': 'satisfied', 'dst': 'full'},
-                {'name': 'eat',  'src': 'full',      'dst': 'sick'},
+                {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                {'name': 'eat', 'src': 'full', 'dst': 'sick'},
                 {'name': 'rest', 'src': ['hungry', 'satisfied', 'full', 'sick'],
                  'dst': 'hungry'}
             ]
@@ -110,9 +108,9 @@ class FysomManyToManyTransitionTests(unittest.TestCase):
         fsm = Fysom({
             'initial': 'sick',
             'events': [
-                {'name': 'eat',  'src': 'hungry',    'dst': 'satisfied'},
-                {'name': 'eat',  'src': 'satisfied', 'dst': 'full'},
-                {'name': 'eat',  'src': 'full',      'dst': 'sick'},
+                {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                {'name': 'eat', 'src': 'full', 'dst': 'sick'},
                 {'name': 'rest', 'src': ['hungry', 'satisfied', 'full', 'sick'],
                  'dst': 'hungry'}
             ]
@@ -124,9 +122,9 @@ class FysomManyToManyTransitionTests(unittest.TestCase):
         fsm = Fysom({
             'initial': 'hungry',
             'events': [
-                {'name': 'eat',  'src': 'hungry',    'dst': 'satisfied'},
-                {'name': 'eat',  'src': 'satisfied', 'dst': 'full'},
-                {'name': 'eat',  'src': 'full',      'dst': 'sick'},
+                {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                {'name': 'eat', 'src': 'full', 'dst': 'sick'},
                 {'name': 'rest', 'src': ['hungry', 'satisfied', 'full', 'sick'],
                  'dst': 'hungry'}
             ]
@@ -138,9 +136,9 @@ class FysomManyToManyTransitionTests(unittest.TestCase):
         fsm = Fysom({
             'initial': 'satisfied',
             'events': [
-                {'name': 'eat',  'src': 'hungry',    'dst': 'satisfied'},
-                {'name': 'eat',  'src': 'satisfied', 'dst': 'full'},
-                {'name': 'eat',  'src': 'full',      'dst': 'sick'},
+                {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                {'name': 'eat', 'src': 'full', 'dst': 'sick'},
                 {'name': 'rest', 'src': ['hungry', 'satisfied', 'full', 'sick'],
                  'dst': 'hungry'}
             ]
@@ -153,9 +151,9 @@ class FysomManyToManyTransitionTests(unittest.TestCase):
         fsm = Fysom({
             'initial': 'full',
             'events': [
-                {'name': 'eat',  'src': 'hungry',    'dst': 'satisfied'},
-                {'name': 'eat',  'src': 'satisfied', 'dst': 'full'},
-                {'name': 'eat',  'src': 'full',      'dst': 'sick'},
+                {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                {'name': 'eat', 'src': 'full', 'dst': 'sick'},
                 {'name': 'rest', 'src': ['hungry', 'satisfied', 'full', 'sick'],
                  'dst': 'hungry'}
             ]
@@ -165,13 +163,12 @@ class FysomManyToManyTransitionTests(unittest.TestCase):
 
 
 class FysomInitializationTests(unittest.TestCase):
-
     def test_should_have_no_state_when_no_initial_state_is_given(self):
         fsm = Fysom({
             'events': [
-                {'name': 'warn',  'src': 'green',  'dst': 'yellow'},
+                {'name': 'warn', 'src': 'green', 'dst': 'yellow'},
                 {'name': 'panic', 'src': 'yellow', 'dst': 'red'},
-                {'name': 'calm',  'src': 'red',    'dst': 'yellow'},
+                {'name': 'calm', 'src': 'red', 'dst': 'yellow'},
                 {'name': 'clear', 'src': 'yellow', 'dst': 'green'}
             ]
         })
@@ -181,9 +178,9 @@ class FysomInitializationTests(unittest.TestCase):
         fsm = Fysom({
             'initial': 'green',
             'events': [
-                {'name': 'warn',  'src': 'green',  'dst': 'yellow'},
+                {'name': 'warn', 'src': 'green', 'dst': 'yellow'},
                 {'name': 'panic', 'src': 'yellow', 'dst': 'red'},
-                {'name': 'calm',  'src': 'red',    'dst': 'yellow'},
+                {'name': 'calm', 'src': 'red', 'dst': 'yellow'},
                 {'name': 'clear', 'src': 'yellow', 'dst': 'green'}
             ]
         })
@@ -194,8 +191,8 @@ class FysomInitializationTests(unittest.TestCase):
             'initial': {'state': 'green', 'event': 'init'},
             'events': [
                 {'name': 'panic', 'src': 'green', 'dst': 'red'},
-                {'name': 'calm',  'src': 'red',   'dst': 'green'},
-                ]
+                {'name': 'calm', 'src': 'red', 'dst': 'green'},
+            ]
         })
         self.assertEquals(fsm.current, 'green')
 
@@ -204,8 +201,8 @@ class FysomInitializationTests(unittest.TestCase):
             'initial': {'state': 'green', 'event': 'init', 'defer': True},
             'events': [
                 {'name': 'panic', 'src': 'green', 'dst': 'red'},
-                {'name': 'calm',  'src': 'red',   'dst': 'green'},
-                ]
+                {'name': 'calm', 'src': 'red', 'dst': 'green'},
+            ]
         })
         self.assertEqual(fsm.current, 'none')
         fsm.init()
@@ -213,7 +210,6 @@ class FysomInitializationTests(unittest.TestCase):
 
 
 class FysomCallbackTests(unittest.TestCase):
-
     def before_foo(self, e):
         self.before_foo_event = e
         self.fired_callbacks.append('before_foo')
@@ -251,7 +247,7 @@ class FysomCallbackTests(unittest.TestCase):
         self.fsm = Fysom({
             'initial': 'sleeping',
             'events': [
-                {'name': 'foo',  'src': 'sleeping',  'dst': 'fooed'},
+                {'name': 'foo', 'src': 'sleeping', 'dst': 'fooed'},
                 {'name': 'bar', 'src': 'fooed', 'dst': 'bared'},
                 {'name': 'baz', 'src': 'bared', 'dst': 'bazed'},
             ],
@@ -284,7 +280,8 @@ class FysomCallbackTests(unittest.TestCase):
         self.fsm.bar()
         self.assertRaises(ValueError, self.fsm.baz)
 
-    def test_onbefore_event_callbacks_should_fire_before_onafter_callbacks_with_keyword_arguments_when_events_occur(self):
+    def test_onbefore_event_callbacks_should_fire_before_onafter_callbacks_with_keyword_arguments_when_events_occur(
+            self):
         self.fsm.foo(attribute='test')
         self.assertTrue(hasattr(self, 'before_foo_event'), 'Callback onbeforefoo did not fire.')
         self.assertTrue(self.before_foo_event is not None)
@@ -319,7 +316,6 @@ class FysomCallbackTests(unittest.TestCase):
 
 
 class FysomAsynchronousStateTransitionTests(unittest.TestCase):
-
     def on_leave_foo(self, e):
         self.leave_foo_event = e
         return False
@@ -333,8 +329,8 @@ class FysomAsynchronousStateTransitionTests(unittest.TestCase):
         self.fsm = Fysom({
             'initial': 'foo',
             'events': [
-                {'name': 'tobar',  'src': 'foo',  'dst': 'bar'}
-                ],
+                {'name': 'tobar', 'src': 'foo', 'dst': 'bar'}
+            ],
             'callbacks': {
                 'onleavefoo': self.on_leave_foo,
                 'onenterbar': self.on_enter_bar
