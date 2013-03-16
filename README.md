@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mriehl/fysom.png?branch=master)](https://travis-ci.org/mriehl/fysom)
+
 #USAGE
 ```python
 from fysom import Fysom
