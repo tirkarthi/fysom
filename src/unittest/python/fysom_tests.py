@@ -213,16 +213,28 @@ class FysomInitializationTests(unittest.TestCase):
 
 class FysomCallbackTests(unittest.TestCase):
 
+    def before_foo(self, e):
+        self.before_foo_event = e
+        self.fired_callbacks.append('before_foo')
+
+    def before_bar(self, e):
+        self.before_bar_event = e
+        self.fired_callbacks.append('before_bar')
+
     def on_foo(self, e):
         self.foo_event = e
+        self.fired_callbacks.append('after_foo')
 
     def on_bar(self, e):
         self.bar_event = e
+        self.fired_callbacks.append('after_bar')
 
     def on_baz(self, e):
         raise ValueError('Baz-inga!')
 
     def setUp(self):
+        self.fired_callbacks = []
+
         self.fsm = Fysom({
             'initial': 'sleeping',
             'events': [
@@ -233,11 +245,13 @@ class FysomCallbackTests(unittest.TestCase):
             'callbacks': {
                 'onfoo': self.on_foo,
                 'onbar': self.on_bar,
-                'onbaz': self.on_baz
+                'onbaz': self.on_baz,
+                'onbeforefoo': self.before_foo,
+                'onbeforebar': self.before_bar
             }
         })
 
-    def test_callbacks_should_fire_with_keyword_arguments_when_events_occur(self):
+    def test_onafter_event_callbacks_should_fire_with_keyword_arguments_when_events_occur(self):
         self.fsm.foo(attribute='test')
         self.assertTrue(hasattr(self, 'foo_event'), 'Callback on_foo did not fire.')
         self.assertTrue(self.foo_event is not None)
@@ -248,7 +262,18 @@ class FysomCallbackTests(unittest.TestCase):
         self.assertTrue(self.bar_event is not None)
         self.assertEqual(self.bar_event.id, 123)
 
-    def test_callbacks_raising_exceptions_should_not_be_eaten(self):
+    def test_onafter_event_callbacks_raising_exceptions_should_not_be_eaten(self):
         self.fsm.foo()
         self.fsm.bar()
         self.assertRaises(ValueError, self.fsm.baz)
+
+    def test_onbefore_event_callbacks_should_fire_before_onafter_callbacks_with_keyword_arguments_when_events_occur(self):
+        self.fsm.foo(attribute='test')
+        self.assertTrue(hasattr(self, 'before_foo_event'), 'Callback onbeforefoo did not fire.')
+        self.assertTrue(self.before_foo_event is not None)
+        self.assertEqual(self.before_foo_event.attribute, 'test')
+        self.fsm.bar(id=123)
+        self.assertTrue(hasattr(self, 'before_bar_event'), 'Callback onbeforebar did not fire.')
+        self.assertTrue(self.before_bar_event is not None)
+        self.assertEqual(self.before_bar_event.id, 123)
+        self.assertEqual(['before_foo', 'after_foo', 'before_bar', 'after_bar'], self.fired_callbacks)
