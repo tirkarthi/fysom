@@ -28,7 +28,7 @@
 
 import unittest
 
-from fysom import Fysom
+from fysom import Fysom, FysomError
 
 
 class FysomStateTests(unittest.TestCase):
@@ -57,6 +57,11 @@ class FysomStateTests(unittest.TestCase):
     def test_transition_should_change_state(self):
         self.fsm.warn()
         self.assertTrue(self.fsm.isstate('yellow'))
+
+    def test_should_raise_exception_when_state_transition_is_not_allowed(self):
+        self.assertRaises(FysomError, self.fsm.panic)
+        self.assertRaises(FysomError, self.fsm.calm)
+        self.assertRaises(FysomError, self.fsm.clear)
 
 
 class FysomManyToManyTransitionTests(unittest.TestCase):
@@ -157,6 +162,7 @@ class FysomManyToManyTransitionTests(unittest.TestCase):
         fsm.eat()
         self.assertEqual(fsm.current, 'sick')
 
+
 class FysomInitializationTests(unittest.TestCase):
 
     def test_should_have_no_state_when_no_initial_state_is_given(self):
@@ -203,3 +209,46 @@ class FysomInitializationTests(unittest.TestCase):
         self.assertEqual(fsm.current, 'none')
         fsm.init()
         self.assertEqual(fsm.current, 'green')
+
+
+class FysomCallbackTests(unittest.TestCase):
+
+    def on_foo(self, e):
+        self.foo_event = e
+
+    def on_bar(self, e):
+        self.bar_event = e
+
+    def on_baz(self, e):
+        raise ValueError('Baz-inga!')
+
+    def setUp(self):
+        self.fsm = Fysom({
+            'initial': 'sleeping',
+            'events': [
+                {'name': 'foo',  'src': 'sleeping',  'dst': 'fooed'},
+                {'name': 'bar', 'src': 'fooed', 'dst': 'bared'},
+                {'name': 'baz', 'src': 'bared', 'dst': 'bazed'},
+            ],
+            'callbacks': {
+                'onfoo': self.on_foo,
+                'onbar': self.on_bar,
+                'onbaz': self.on_baz
+            }
+        })
+
+    def test_callbacks_should_fire_with_keyword_arguments_when_events_occur(self):
+        self.fsm.foo(attribute='test')
+        self.assertTrue(hasattr(self, 'foo_event'), 'Callback on_foo did not fire.')
+        self.assertIsNotNone(self.foo_event)
+        self.assertEqual(self.foo_event.attribute, 'test')
+
+        self.fsm.bar(id=123)
+        self.assertTrue(hasattr(self, 'bar_event'), 'Callback on_bar did not fire.')
+        self.assertIsNotNone(self.bar_event)
+        self.assertEqual(self.bar_event.id, 123)
+
+    def test_callbacks_raising_exceptions_should_not_be_eaten(self):
+        self.fsm.foo()
+        self.fsm.bar()
+        self.assertRaises(ValueError, self.fsm.baz)
