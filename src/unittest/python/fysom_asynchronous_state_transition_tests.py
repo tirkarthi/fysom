@@ -39,6 +39,7 @@ class FysomAsynchronousStateTransitionTests(unittest.TestCase):
 
     def on_enter_bar(self, e):
         self.on_enter_bar_fired = True
+        self.on_enter_bar_event = e
 
     def setUp(self):
         self.on_enter_bar_fired = False

@@ -29,7 +29,7 @@
 
 import unittest
 
-from fysom import Fysom, FysomError
+from fysom import Fysom
 
 
 class FysomCallbackTests(unittest.TestCase):
