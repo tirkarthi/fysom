@@ -46,7 +46,8 @@ class FysomAsynchronousStateTransitionTests(unittest.TestCase):
         self.fsm = Fysom({
             'initial': 'foo',
             'events': [
-                {'name': 'tobar', 'src': 'foo', 'dst': 'bar'}
+                {'name': 'footobar', 'src': 'foo', 'dst': 'bar'},
+                {'name': 'bartobar', 'src': 'bar', 'dst': 'bar'}
             ],
             'callbacks': {
                 'onleavefoo': self.on_leave_foo,
@@ -55,7 +56,7 @@ class FysomAsynchronousStateTransitionTests(unittest.TestCase):
         })
 
     def test_fsm_should_be_put_on_hold_when_onleave_state_returns_false(self):
-        self.fsm.tobar(id=123)
+        self.fsm.footobar(id=123)
         self.assertEqual(self.fsm.current, 'foo')
         self.assertTrue(hasattr(self, 'leave_foo_event'), 'Callback onleavefoo did not fire.')
         self.assertTrue(self.leave_foo_event is not None)
@@ -64,7 +65,11 @@ class FysomAsynchronousStateTransitionTests(unittest.TestCase):
         self.assertEqual(self.fsm.current, 'bar')
 
     def test_onenter_state_should_not_fire_when_fsm_is_put_on_hold(self):
-        self.fsm.tobar(id=123)
+        self.fsm.footobar(id=123)
         self.assertFalse(self.on_enter_bar_fired)
         self.fsm.transition()
         self.assertTrue(self.on_enter_bar_fired)
+
+    def test_should_raise_exception_upon_further_transitions_when_fsm_is_on_hold(self):
+        self.fsm.footobar(id=123)
+        self.assertRaises(FysomError, self.fsm.bartobar)
