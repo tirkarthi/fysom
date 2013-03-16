@@ -238,6 +238,12 @@ class FysomCallbackTests(unittest.TestCase):
     def on_enter_bared(self, e):
         self.enter_bared_event = e
 
+    def on_leave_sleeping(self, e):
+        self.leave_sleeping_event = e
+
+    def on_leave_fooed(self, e):
+        self.leave_fooed_event = e
+
     def setUp(self):
         self.fired_callbacks = []
 
@@ -255,7 +261,9 @@ class FysomCallbackTests(unittest.TestCase):
                 'onbeforefoo': self.before_foo,
                 'onbeforebar': self.before_bar,
                 'onenterfooed': self.on_enter_fooed,
-                'onenterbared': self.on_enter_bared
+                'onenterbared': self.on_enter_bared,
+                'onleavesleeping': self.on_leave_sleeping,
+                'onleavefooed': self.on_leave_fooed
             }
         })
 
@@ -296,3 +304,14 @@ class FysomCallbackTests(unittest.TestCase):
         self.assertTrue(hasattr(self, 'enter_bared_event'), 'Callback onenterbared did not fire.')
         self.assertTrue(self.enter_bared_event is not None)
         self.assertEqual(self.enter_bared_event.id, 123)
+
+    def test_onleave_state_callbacks_should_fire_with_keyword_arguments_when_state_transitions_occur(self):
+        self.fsm.foo(attribute='test')
+        self.assertTrue(hasattr(self, 'leave_sleeping_event'), 'Callback onleavesleeping did not fire.')
+        self.assertTrue(self.leave_sleeping_event is not None)
+        self.assertEqual(self.leave_sleeping_event.attribute, 'test')
+
+        self.fsm.bar(id=123)
+        self.assertTrue(hasattr(self, 'leave_fooed_event'), 'Callback onleavefooed did not fire.')
+        self.assertTrue(self.leave_fooed_event is not None)
+        self.assertEqual(self.leave_fooed_event.id, 123)
