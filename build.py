@@ -36,6 +36,8 @@ use_plugin('python.coverage')
 use_plugin('python.distutils')
 use_plugin('python.unittest')
 use_plugin('python.flake8')
+use_plugin('python.pydev')
+use_plugin('copy_resources')
 
 authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
            Author('Jake Gordon', 'jake@codeincomplete.com')]
@@ -50,3 +52,14 @@ default_task = ['analyze', 'publish']
 @init
 def set_properties(project):
     project.get_property('filter_resources_glob').append('**/fysom/__init__.py')
+
+    project.set_property('copy_resources_target', '$dir_dist')
+    project.get_property('copy_resources_glob').append('setup.cfg')
+
+
+@init(environments="teamcity")
+def set_properties_for_teamcity(project):
+    import os
+    project.version = '%s-%s' % (project.version, os.environ.get('BUILD_NUMBER', 0))
+    project.default_task = ['install_build_dependencies', 'analyze', 'package']
+    project.get_property('distutils_commands').append('bdist_rpm')
