@@ -1,6 +1,35 @@
 [![Build Status](https://travis-ci.org/mriehl/fysom.png?branch=master)](https://travis-ci.org/mriehl/fysom)
 
-#USAGE
+# Installation
+## From the cheeseshop
+```bash
+pip install fysom
+```
+
+## Developer setup
+```bash
+git clone https://github.com/mriehl/fysom
+cd fysom
+virtualenv venv
+. venv/bin/activate
+pip install pybuilder
+pyb install_dependencies
+```
+
+## Running the tests
+```bash
+pyb verify
+```
+
+## Generating a setup.py
+```bash
+pyb
+cd target/dist/fysom-1.0.1
+./setup.py <whatever you want>
+```
+
+# USAGE
+## Basics
 ```python
 from fysom import Fysom
 
@@ -30,7 +59,73 @@ along with the following members:
   - fsm.cannot(e)  - return True if event s cannot be fired in the
                      current state
 
-## MULTIPLE SRC AND TO STATES FOR A SINGLE EVENT
+## Initialization
+
+How the state machine should initialize can depend on your application
+requirements, so the library provides a number of simple options.
+
+By default, if you don't specify any initial state, the state machine
+will be in the 'none' state and you would need to provide an event to
+take it out of this state:
+```python
+fsm = Fysom({
+  'events': [
+    {'name': 'startup', 'src': 'none',  'dst': 'green'},
+    {'name': 'panic',   'src': 'green', 'dst': 'red'},
+    {'name': 'calm',    'src': 'red',   'dst': 'green'},
+  ]
+})
+print fsm.current # "none"
+fsm.startup()
+print fsm.current # "green"
+```
+If you specifiy the name of you initial event (as in all the earlier
+examples), then an implicit 'startup' event will be created for you and
+fired when the state machine is constructed:
+```python
+fsm = Fysom({
+  'initial': 'green',
+  'events': [
+    {'name': 'panic', 'src': 'green', 'dst': 'red'},
+    {'name': 'calm',  'src': 'red',   'dst': 'green'},
+  ]
+})
+print fsm.current # "green"
+```
+If your object already has a startup method, you can use a different
+name for the initial event:
+```python
+fsm = Fysom({
+  'initial': {'state': 'green', 'event': 'init'},
+  'events': [
+    {'name': 'panic', 'src': 'green', 'dst': 'red'},
+    {'name': 'calm',  'src': 'red',   'dst': 'green'},
+  ]
+})
+print fsm.current # "green"
+```
+Finally, if you want to wait to call the initiall state transition
+event until a later date, you can defer it:
+```python
+fsm = Fysom({
+  'initial': {'state': 'green', 'event': 'init', 'defer': True},
+  'events': [
+    {'name': 'panic', 'src': 'green', 'dst': 'red'},
+    {'name': 'calm',  'src': 'red',   'dst': 'green'},
+  ]
+})
+print fsm.current # "none"
+fsm.init()
+print fsm.current # "green"
+```
+Of course, we have now come full circle, this last example pretty much
+functions the same as the first example in this section where you simply
+define your own startup event.
+
+So you have a number of choices available to you when initializing your
+state machine.
+
+## Multiple source and destination states for a single event
 ```python
 fsm = Fysom({
   'initial': 'hungry',
@@ -54,7 +149,7 @@ event will transition to a state that is dependent on the current state.
 NOTE the rest event in the above example can also be specified as
 multiple events with the same name if you prefer the verbose approach.
 
-## CALLBACKS
+## Callbacks
 
 4 callbacks are available if your state machine has methods using the
 following naming conventions:
@@ -134,7 +229,7 @@ del fsm.onred
 fsm.onchangestate = printstatechange
 ```
 
-## ASYNCHRONOUS STATE TRANSITIONS
+## Asynchronous state transitions
 
 Sometimes, you need to execute some asynchronous code during a state
 transition and ensure the new state is not entered until you code has
@@ -147,69 +242,3 @@ new state after the download is complete.
 You can return False from your onleave_state_ handler and the state
 machine will be put on hold until you are ready to trigger the
 transition using transition() method.
-
-## INITIALIZATION OPTIONS
-
-How the state machine should initialize can depend on your application
-requirements, so the library provides a number of simple options.
-
-By default, if you don't specify any initial state, the state machine
-will be in the 'none' state and you would need to provide an event to
-take it out of this state:
-```python
-fsm = Fysom({
-  'events': [
-    {'name': 'startup', 'src': 'none',  'dst': 'green'},
-    {'name': 'panic',   'src': 'green', 'dst': 'red'},
-    {'name': 'calm',    'src': 'red',   'dst': 'green'},
-  ]
-})
-print fsm.current # "none"
-fsm.startup()
-print fsm.current # "green"
-```
-If you specifiy the name of you initial event (as in all the earlier
-examples), then an implicit 'startup' event will be created for you and
-fired when the state machine is constructed:
-```python
-fsm = Fysom({
-  'initial': 'green',
-  'events': [
-    {'name': 'panic', 'src': 'green', 'dst': 'red'},
-    {'name': 'calm',  'src': 'red',   'dst': 'green'},
-  ]
-})
-print fsm.current # "green"
-```
-If your object already has a startup method, you can use a different
-name for the initial event:
-```python
-fsm = Fysom({
-  'initial': {'state': 'green', 'event': 'init'},
-  'events': [
-    {'name': 'panic', 'src': 'green', 'dst': 'red'},
-    {'name': 'calm',  'src': 'red',   'dst': 'green'},
-  ]
-})
-print fsm.current # "green"
-```
-Finally, if you want to wait to call the initiall state transition
-event until a later date, you can defer it:
-```python
-fsm = Fysom({
-  'initial': {'state': 'green', 'event': 'init', 'defer': True},
-  'events': [
-    {'name': 'panic', 'src': 'green', 'dst': 'red'},
-    {'name': 'calm',  'src': 'red',   'dst': 'green'},
-  ]
-})
-print fsm.current # "none"
-fsm.init()
-print fsm.current # "green"
-```
-Of course, we have now come full circle, this last example pretty much
-functions the same as the first example in this section where you simply
-define your own startup event.
-
-So you have a number of choices available to you when initializing your
-state machine.
