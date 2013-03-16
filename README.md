@@ -1,7 +1,11 @@
 [![Build Status](https://travis-ci.org/mriehl/fysom.png?branch=master)](https://travis-ci.org/mriehl/fysom)
 
+# License
+MIT licensed.
+All credits go to Jake Gordon for the [original javascript implementation](https://github.com/jakesgordon/javascript-state-machine/) and to Mansour Behabadi for the [python port](https://github.com/oxplot/fysom)
+
 # Installation
-## From the cheeseshop
+## From your friendly neighbourhood cheeseshop
 ```bash
 pip install fysom
 ```
