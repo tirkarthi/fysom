@@ -46,7 +46,7 @@ authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
 license = 'MIT'
 name = 'fysom'
 url = 'https://github.com/mriehl/fysom'
-version = '1.0.3'
+version = '1.0.4'
 
 default_task = ['analyze', 'publish']
 
@@ -57,6 +57,7 @@ def set_properties(project):
 
     project.set_property('copy_resources_target', '$dir_dist')
     project.get_property('copy_resources_glob').append('setup.cfg')
+    project.get_property('copy_resources_glob').append('README')
 
 
 @init(environments="teamcity")
