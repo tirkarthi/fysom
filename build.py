@@ -46,7 +46,7 @@ authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
 license = 'MIT'
 name = 'fysom'
 url = 'https://github.com/mriehl/fysom'
-version = '1.0.4'
+version = '1.0.5'
 
 default_task = ['analyze', 'publish']
 
