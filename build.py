@@ -41,11 +41,12 @@ use_plugin('python.pydev')
 use_plugin('copy_resources')
 
 authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
-           Author('Jake Gordon', 'jake@codeincomplete.com')]
+           Author('Jake Gordon', 'jake@codeincomplete.com'),
+           Author('Maximilien Riehl', 'maximilien.riehl@gmail.com')]
 license = 'MIT'
 name = 'fysom'
-url = 'https://github.com/oxplot/fysom'
-version = '1.0.2'
+url = 'https://github.com/mriehl/fysom'
+version = '1.0.3'
 
 default_task = ['analyze', 'publish']
 
