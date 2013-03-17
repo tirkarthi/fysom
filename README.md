@@ -39,7 +39,7 @@ pyb verify
 ## Generating a setup.py
 ```bash
 pyb
-cd target/dist/fysom-1.0.1
+cd target/dist/fysom-1.0.7
 ./setup.py <whatever you want>
 ```
 

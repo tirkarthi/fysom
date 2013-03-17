@@ -40,13 +40,14 @@ use_plugin('python.flake8')
 use_plugin('python.pydev')
 use_plugin('copy_resources')
 
+name = 'fysom'
+url = 'https://github.com/mriehl/fysom'
+license = 'MIT'
 authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
            Author('Jake Gordon', 'jake@codeincomplete.com'),
            Author('Maximilien Riehl', 'maximilien.riehl@gmail.com')]
-license = 'MIT'
-name = 'fysom'
-url = 'https://github.com/mriehl/fysom'
-version = '1.0.5'
+summary = 'pYthOn Finite State Machine'
+version = '1.0.7'
 
 default_task = ['analyze', 'publish']
 
