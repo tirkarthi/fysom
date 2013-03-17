@@ -60,6 +60,14 @@ def set_properties(project):
     project.get_property('copy_resources_glob').append('setup.cfg')
     project.get_property('copy_resources_glob').append('README')
 
+    project.set_property('distutils_classifiers', [
+          'Development Status :: 5 - Production/Stable',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: MIT License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Scientific/Engineering'])
 
 @init(environments="teamcity")
 def set_properties_for_teamcity(project):
