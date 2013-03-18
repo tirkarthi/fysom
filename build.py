@@ -1,8 +1,8 @@
 # coding=utf-8
 #
-# fysom.py - pYthOn Finite State Machine - this is a port of Jake
-#            Gordon's javascript-state-machine to python
-#            https://github.com/jakesgordon/javascript-state-machine
+# fysom - pYthOn Finite State Machine - this is a port of Jake
+#         Gordon's javascript-state-machine to python
+#         https://github.com/jakesgordon/javascript-state-machine
 #
 # Copyright (C) 2011 Mansour Behabadi <mansour@oxplot.com>, Jake Gordon
 #                    and other contributors
@@ -47,7 +47,7 @@ authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
            Author('Jake Gordon', 'jake@codeincomplete.com'),
            Author('Maximilien Riehl', 'maximilien.riehl@gmail.com')]
 summary = 'pYthOn Finite State Machine'
-version = '1.0.8'
+version = '1.0.9'
 
 default_task = ['analyze', 'publish']
 

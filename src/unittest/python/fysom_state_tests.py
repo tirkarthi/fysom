@@ -1,4 +1,12 @@
 # coding=utf-8
+#
+# fysom - pYthOn Finite State Machine - this is a port of Jake
+#         Gordon's javascript-state-machine to python
+#         https://github.com/jakesgordon/javascript-state-machine
+#
+# Copyright (C) 2011 Mansour Behabadi <mansour@oxplot.com>, Jake Gordon
+#                                        and other contributors
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including

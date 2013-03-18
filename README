@@ -58,7 +58,7 @@ Generating a setup.py
 ::
 
     pyb
-    cd target/dist/fysom-1.0.8
+    cd target/dist/fysom-1.0.9
     ./setup.py <whatever you want>
 
 Looking at the coverage
