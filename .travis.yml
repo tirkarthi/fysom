@@ -4,7 +4,24 @@ python:
   - "2.7"
   - "3.2"
   - "pypy"
-before_script: sudo apt-get install pychecker pylint pep8 rpm python-rpm
+
+env:
+  - JYTHON=true
+  - JYTHON=false
+
+matrix:
+  exclude:
+    - python: 2.6
+      env: JYTHON=true
+    - python: 3.2
+      env: JYTHON=true
+    - python: pypy
+      env: JYTHON=true
+
+before_install: if [ "$JYTHON" == "true" ]; then sudo apt-get install jython; fi
+
+before_script: sudo apt-get install pychecker pylint pep8 rpm python-rpm; if [ "$JYTHON" == "true" ]; then export PYTHON_EXE=jython; jython -c "print ''"; else export PYTHON_EXE=python; fi
+
 install:
   - pip install pybuilder --use-mirrors
   - pyb --debug install_dependencies
