@@ -11,10 +11,12 @@ port <https://github.com/oxplot/fysom>`_.
 Synopsis
 ========
 
-This is basically Mansours' implementation. *But with 100% unittest
-coverage*, so you can actually modify the source. It's also on PyPi
-(``pip install fysom``) so you don't need to copy his source and get
+This is basically Mansours' implementation.
+*But with 100% unittest coverage*, so you can actually modify the source.
+It's also on PyPi (``pip install fysom``) so you don't need to copy his source and get
 updates/bugfixes easily, and has a fully-fledged module structure.
+
+Fysom is build and tested on python 2.6 to 3.3 and PyPy.
 
 Installation
 ============
@@ -43,7 +45,7 @@ Or you could use `pyb\_init <https://github.com/mriehl/pyb_init>`_ and
 run
 ::
 
-    pyb_init https://github.com/mriehl/fysom
+    pyb-init github mriehl : fysom
 
 Running the tests
 -----------------
@@ -52,14 +54,14 @@ Running the tests
 
     pyb verify
 
-Generating a setup.py
+Generating and using a setup.py
 ---------------------
 
 ::
 
     pyb
-    cd target/dist/fysom-1.0.9
-    ./setup.py <whatever you want>
+    cd target/dist/fysom-$VERSION
+    ./setup.py bdist_rpm #build RPM
 
 Looking at the coverage
 -----------------------
