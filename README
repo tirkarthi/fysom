@@ -1,4 +1,7 @@
-`|Build Status| <https://travis-ci.org/mriehl/fysom>`_
+.. image:: https://travis-ci.org/mriehl/fysom.png?branch=master
+   :alt: Travis build status image
+   :align: left
+   :target: https://travis-ci.org/
 
 License
 =======
