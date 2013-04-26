@@ -43,7 +43,7 @@ Or you could use `pyb\_init <https://github.com/mriehl/pyb_init>`_ and
 run
 ::
 
-    pyb_init https://github.com/mriehl/fysom
+    pyb-init github mriehl : fysom
 
 Running the tests
 -----------------
