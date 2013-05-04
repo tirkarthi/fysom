@@ -4,11 +4,11 @@
    :target: https://travis-ci.org/mriehl/fysom
 
 .. image:: https://pypip.in/v/fysom/badge.png
-    :target: https://crate.io/packages/$REPO/
+    :target: https://crate.io/packages/fysom/
     :alt: Latest PyPI version
 
 .. image:: https://pypip.in/d/fysom/badge.png
-    :target: https://crate.io/packages/$REPO/
+    :target: https://crate.io/packages/fysom/
     :alt: Number of PyPI downloads
 
 License
