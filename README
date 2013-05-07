@@ -11,6 +11,7 @@
     :target: https://crate.io/packages/fysom/
     :alt: Number of PyPI downloads
 
+
 License
 =======
 
@@ -66,7 +67,7 @@ Running the tests
     pyb verify
 
 Generating and using a setup.py
----------------------
+-------------------------------
 
 ::
 
