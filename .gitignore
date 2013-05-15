@@ -45,3 +45,6 @@ dist-rpms
 
 # IDEA pycharm files
 .idea
+
+# Sublime text
+*.sublime-*
