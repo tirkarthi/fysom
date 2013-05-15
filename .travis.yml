@@ -12,6 +12,6 @@ install:
   - pip install pybuilder --use-mirrors
   - pip install coveralls
   - pyb --debug install_dependencies
-script: "pyb --debug -v verify && coverage run --source=src/main/python venv/bin/pyb"
+script: "pyb --debug -v verify && coverage run --source=src/main/python/fysom venv/bin/pyb run_unit_tests"
 after_success:
   - coveralls --verbose
