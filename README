@@ -2,6 +2,10 @@
    :alt: Travis build status image
    :align: left
    :target: https://travis-ci.org/mriehl/fysom
+   
+.. image:: https://coveralls.io/repos/mriehl/fysom/badge.png?branch=master
+    :target: https://coveralls.io/r/mriehl/fysom?branch=master
+    :alt: Coverage status
 
 .. image:: https://pypip.in/v/fysom/badge.png
     :target: https://crate.io/packages/fysom/
