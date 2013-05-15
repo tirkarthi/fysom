@@ -28,7 +28,7 @@ This is basically Mansours' implementation.
 It's also on PyPi (``pip install fysom``) so you don't need to copy his source and get
 updates/bugfixes easily, and has a fully-fledged module structure.
 
-Fysom is build and tested on python 2.6 to 3.3 and PyPy.
+Fysom is built and tested on python 2.6 to 3.3 and PyPy.
 
 Installation
 ============
@@ -46,17 +46,7 @@ Developer setup
 This module uses the `pybuilder <http://pybuilder.github.com>`_.
 ::
 
-    git clone https://github.com/mriehl/fysom
-    cd fysom
-    virtualenv venv
-    . venv/bin/activate
-    pip install pybuilder
-    pyb install_dependencies
-
-Or you could use `pyb\_init <https://github.com/mriehl/pyb_init>`_ and
-run
-::
-
+    sudo pip install pyb_init
     pyb-init github mriehl : fysom
 
 Running the tests
