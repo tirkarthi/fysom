@@ -223,6 +223,8 @@ following attributes:
 -  dst Destination state
 -  (any other keyword arguments you passed into the original event
    method)
+-  (any positional argument you passed in the original event method,
+   in the 'args' attribute of the event)
 
 Note that when you call an event, only one instance of 'e' argument is
 created and passed to all 4 callbacks. This allows you to preserve data
@@ -235,7 +237,7 @@ Callbacks can be specified when the state machine is first created:
     def onpanic(e):
         print 'panic! ' + e.msg
     def oncalm(e):
-        print 'thanks to ' + e.msg
+        print 'thanks to ' + e.msg + ' done by ' + e.args[0]
     def ongreen(e):
         print 'green'
     def onyellow(e):
@@ -257,7 +259,7 @@ Callbacks can be specified when the state machine is first created:
                      'onred': onred }})
 
     fsm.panic(msg='killer bees')
-    fsm.calm(msg='sedatives in the honey pots')
+    fsm.calm('bob', msg='sedatives in the honey pots')
 
 Additionally, they can be added and removed from the state machine at any time:
 ::

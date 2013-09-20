@@ -170,9 +170,10 @@ class FysomCallbackTests(unittest.TestCase):
         self.assertEqual(self.current_event.id, 123)
         self.assertTrue(self.current_event.fsm is fsm)
 
-        fsm.bartobaz(attribute='test')
+        fsm.bartobaz('positional', named_attribute='test')
         self.assertEqual(self.current_event.event, 'bartobaz')
         self.assertEqual(self.current_event.src, 'bar')
         self.assertEqual(self.current_event.dst, 'baz')
-        self.assertEqual(self.current_event.attribute, 'test')
+        self.assertEqual(self.current_event.named_attribute, 'test')
+        self.assertEqual(self.current_event.args[0], 'positional')
         self.assertTrue(self.current_event.fsm is fsm)

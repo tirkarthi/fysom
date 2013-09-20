@@ -31,7 +31,7 @@ __author__ = 'Mansour Behabadi'
 __copyright__ = 'Copyright 2011, Mansour Behabadi and Jake Gordon'
 __credits__ = ['Mansour Behabadi', 'Jake Gordon']
 __license__ = 'MIT'
-__version__ = '${version}'
+__version__ = '1.0.11'
 __maintainer__ = 'Mansour Behabadi'
 __email__ = 'mansour@oxplot.com'
 
@@ -92,7 +92,7 @@ class Fysom(object):
 
     def _build_event(self, event):
 
-        def fn(**kwargs):
+        def fn(*args, **kwargs):
 
             if hasattr(self, 'transition'):
                 raise FysomError("event %s inappropriate because previous transition did not complete" % event)
@@ -108,6 +108,8 @@ class Fysom(object):
             e.fsm, e.event, e.src, e.dst = self, event, src, dst
             for k in kwargs:
                 setattr(e, k, kwargs[k])
+
+            setattr(e, 'args', args)
 
             if self.current != dst:
                 if self._before_event(e) is False:
