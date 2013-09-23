@@ -55,24 +55,27 @@ default_task = ['analyze', 'publish']
 
 @init
 def set_properties(project):
-    project.get_property('filter_resources_glob').append('**/fysom/__init__.py')
+    project.get_property('filter_resources_glob').append(
+        '**/fysom/__init__.py')
 
     project.set_property('copy_resources_target', '$dir_dist')
     project.get_property('copy_resources_glob').append('setup.cfg')
     project.get_property('copy_resources_glob').append('README')
 
     project.set_property('distutils_classifiers', [
-          'Development Status :: 5 - Production/Stable',
-          'Intended Audience :: Developers',
-          'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python',
-          'Natural Language :: English',
-          'Operating System :: OS Independent',
-          'Topic :: Scientific/Engineering'])
+                         'Development Status :: 5 - Production/Stable',
+                         'Intended Audience :: Developers',
+                         'License :: OSI Approved :: MIT License',
+                         'Programming Language :: Python',
+                         'Natural Language :: English',
+                         'Operating System :: OS Independent',
+                         'Topic :: Scientific/Engineering'])
+
 
 @init(environments="teamcity")
 def set_properties_for_teamcity(project):
     import os
-    project.version = '%s-%s' % (project.version, os.environ.get('BUILD_NUMBER', 0))
+    project.version = '%s-%s' % (
+        project.version, os.environ.get('BUILD_NUMBER', 0))
     project.default_task = ['install_build_dependencies', 'analyze', 'package']
     project.get_property('distutils_commands').append('bdist_rpm')
