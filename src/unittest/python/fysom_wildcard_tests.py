@@ -27,58 +27,38 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-import unittest
-import copy
-
 from fysom import Fysom
+from fysom_many_to_many_tests import FysomManyToManyTransitionTests
 
 
-class FysomManyToManyTransitionTests(unittest.TestCase):
+class FysomWildcardTransitionTests(FysomManyToManyTransitionTests):
     fsm_descr = {
         'initial': 'hungry',
         'events': [
             {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
             {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
             {'name': 'eat', 'src': 'full', 'dst': 'sick'},
-            {'name': 'rest', 'src': ['hungry', 'satisfied', 'full', 'sick'],
-             'dst': 'hungry'}
+            {'name': 'rest', 'src': '*', 'dst': 'hungry'}
         ]
     }
 
-    def _get_descr(self, initial=None):
-        mycopy = copy.deepcopy(self.fsm_descr)
-        if initial:
-            mycopy['initial'] = initial
-        return mycopy
-
-    def test_rest_should_always_transition_to_hungry_state(self):
-        fsm = Fysom(self.fsm_descr)
-        fsm.rest()
-        self.assertEquals(fsm.current, 'hungry')
-
-        fsm = Fysom(self._get_descr('satisfied'))
-        fsm.rest()
-        self.assertEquals(fsm.current, 'hungry')
-
-        fsm = Fysom(self._get_descr('full'))
-        fsm.rest()
-        self.assertEquals(fsm.current, 'hungry')
-
-        fsm = Fysom(self._get_descr('sick'))
-        fsm.rest()
-        self.assertEquals(fsm.current, 'hungry')
-
-    def test_eat_should_transition_to_satisfied_when_hungry(self):
-        fsm = Fysom(self._get_descr('hungry'))
+    def test_if_src_not_specified_then_is_wildcard(self):
+        fsm = Fysom({
+            'initial': 'hungry',
+            'events': [
+                {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                {'name': 'eat', 'src': 'full', 'dst': 'sick'},
+                {'name': 'rest', 'dst': 'hungry'}
+            ]
+        })
         fsm.eat()
         self.assertEqual(fsm.current, 'satisfied')
-
-    def test_eat_should_transition_to_full_when_satisfied(self):
-        fsm = Fysom(self._get_descr('satisfied'))
+        fsm.rest()
+        self.assertEqual(fsm.current, 'hungry')
+        fsm.eat()
         fsm.eat()
         self.assertEqual(fsm.current, 'full')
+        fsm.rest()
+        self.assertEqual(fsm.current, 'hungry')
 
-    def test_eat_should_transition_to_sick_when_full(self):
-        fsm = Fysom(self._get_descr('full'))
-        fsm.eat()
-        self.assertEqual(fsm.current, 'sick')

@@ -36,6 +36,9 @@ __maintainer__ = 'Mansour Behabadi'
 __email__ = 'mansour@oxplot.com'
 
 
+WILDCARD = '*'
+
+
 class FysomError(Exception):
     pass
 
@@ -49,23 +52,32 @@ class Fysom(object):
         return self.current == state
 
     def can(self, event):
-        return event in self._map and self.current in self._map[event] \
+        return event in self._map and ((self.current in self._map[event]) or WILDCARD in self._map[event]) \
             and not hasattr(self, 'transition')
 
     def cannot(self, event):
         return not self.can(event)
 
+    def is_finished(self):
+        return self._final and (self.current == self._final)
+
     def _apply(self, cfg):
         init = cfg['initial'] if 'initial' in cfg else None
         if self._is_base_string(init):
             init = {'state': init}
+
+        self._final = cfg['final'] if 'final' in cfg else None
+
         events = cfg['events'] if 'events' in cfg else []
         callbacks = cfg['callbacks'] if 'callbacks' in cfg else {}
         tmap = {}
         self._map = tmap
 
         def add(e):
-            src = [e['src']] if self._is_base_string(e['src']) else e['src']
+            if 'src' in e:
+                src = [e['src']] if self._is_base_string(e['src']) else e['src']
+            else:
+                src = [WILDCARD]
             if e['name'] not in tmap:
                 tmap[e['name']] = {}
             for s in src:
@@ -100,7 +112,8 @@ class Fysom(object):
                 raise FysomError("event %s inappropriate in current state %s" % (event, self.current))
 
             src = self.current
-            dst = self._map[event][src]
+            dst = ((src in self._map[event] and self._map[event][src]) or
+                   WILDCARD in self._map[event] and self._map[event][WILDCARD])
 
             class _e_obj(object):
                 pass

@@ -167,6 +167,22 @@ define your own startup event.
 So you have a number of choices available to you when initializing your
 state machine.
 
+You can also indicate which state should be considered final.
+This has no effect on the state machine, but lets you use a shorthand
+method is_finished() that returns true if the state machine is in
+this 'final' state:
+::
+
+    fsm = Fysom({'initial': 'green',
+                 'final': red,
+                 'events': [
+                     {'name': 'panic', 'src': 'green', 'dst': 'red'},
+                     {'name': 'calm',  'src': 'red',   'dst': 'green'}]})
+    print fsm.current # "green"
+    fsm.is_finished() # False
+    fsm.panic()
+    fsm.is_finished() # True
+
 Multiple source and destination states for a single event
 ---------------------------------------------------------
 ::
@@ -188,6 +204,19 @@ event will transition to a state that is dependent on the current state.
 
 NOTE the rest event in the above example can also be specified as
 multiple events with the same name if you prefer the verbose approach.
+
+NOTE if an event can be triggered from any state, you can specify it
+using the '*' wildcard, or even by omitting the src attribute from its
+definition:
+::
+
+    fsm = Fysom({'initial': 'hungry',
+                 'events': [
+                     {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                     {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                     {'name': 'eat', 'src': 'full', 'dst': 'sick'},
+                     {'name': 'eat_a_lot', 'src': '*', 'dst': 'sick'},
+                     {'name': 'rest', 'dst': 'hungry'}]})
 
 Callbacks
 ---------
