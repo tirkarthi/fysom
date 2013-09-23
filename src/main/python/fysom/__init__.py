@@ -52,8 +52,8 @@ class Fysom(object):
         return self.current == state
 
     def can(self, event):
-        return event in self._map and ((self.current in self._map[event]) or WILDCARD in self._map[event]) \
-            and not hasattr(self, 'transition')
+        return (event in self._map and ((self.current in self._map[event]) or WILDCARD in self._map[event])
+                and not hasattr(self, 'transition'))
 
     def cannot(self, event):
         return not self.can(event)
@@ -75,7 +75,8 @@ class Fysom(object):
 
         def add(e):
             if 'src' in e:
-                src = [e['src']] if self._is_base_string(e['src']) else e['src']
+                src = [e['src']] if self._is_base_string(
+                    e['src']) else e['src']
             else:
                 src = [WILDCARD]
             if e['name'] not in tmap:
@@ -107,9 +108,11 @@ class Fysom(object):
         def fn(*args, **kwargs):
 
             if hasattr(self, 'transition'):
-                raise FysomError("event %s inappropriate because previous transition did not complete" % event)
+                raise FysomError(
+                    "event %s inappropriate because previous transition did not complete" % event)
             if not self.can(event):
-                raise FysomError("event %s inappropriate in current state %s" % (event, self.current))
+                raise FysomError(
+                    "event %s inappropriate in current state %s" % (event, self.current))
 
             src = self.current
             dst = ((src in self._map[event] and self._map[event][src]) or
