@@ -45,7 +45,8 @@ url = 'https://github.com/mriehl/fysom'
 license = 'MIT'
 authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
            Author('Jake Gordon', 'jake@codeincomplete.com'),
-           Author('Maximilien Riehl', 'maximilien.riehl@gmail.com')]
+           Author('Maximilien Riehl', 'maximilien.riehl@gmail.com'),
+           Author('Stefano', email='')]
 summary = 'pYthOn Finite State Machine'
 version = '1.0.13'
 
