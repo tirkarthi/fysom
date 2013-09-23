@@ -61,4 +61,3 @@ class FysomWildcardTransitionTests(FysomManyToManyTransitionTests):
         self.assertEqual(fsm.current, 'full')
         fsm.rest()
         self.assertEqual(fsm.current, 'hungry')
-

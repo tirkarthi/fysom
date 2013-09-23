@@ -33,6 +33,7 @@ from fysom import Fysom
 
 
 class FysomCallbackTests(unittest.TestCase):
+
     def before_foo(self, e):
         self.before_foo_event = e
         self.fired_callbacks.append('before_foo')
@@ -79,7 +80,7 @@ class FysomCallbackTests(unittest.TestCase):
                 {'name': 'bar', 'src': 'fooed', 'dst': 'bared'},
                 {'name': 'baz', 'src': 'bared', 'dst': 'bazed'},
                 {'name': 'wait', 'src': 'sleeping', 'dst': 'waiting'}
-                ],
+            ],
             'callbacks': {
                 'onfoo': self.on_foo,
                 'onbar': self.on_bar,
@@ -96,12 +97,14 @@ class FysomCallbackTests(unittest.TestCase):
 
     def test_onafter_event_callbacks_should_fire_with_keyword_arguments_when_events_occur(self):
         self.fsm.foo(attribute='test')
-        self.assertTrue(hasattr(self, 'foo_event'), 'Callback on_foo did not fire.')
+        self.assertTrue(
+            hasattr(self, 'foo_event'), 'Callback on_foo did not fire.')
         self.assertTrue(self.foo_event is not None)
         self.assertEqual(self.foo_event.attribute, 'test')
 
         self.fsm.bar(id=123)
-        self.assertTrue(hasattr(self, 'bar_event'), 'Callback on_bar did not fire.')
+        self.assertTrue(
+            hasattr(self, 'bar_event'), 'Callback on_bar did not fire.')
         self.assertTrue(self.bar_event is not None)
         self.assertEqual(self.bar_event.id, 123)
 
@@ -113,39 +116,45 @@ class FysomCallbackTests(unittest.TestCase):
     def test_onbefore_event_callbacks_should_fire_before_onafter_callbacks_with_keyword_arguments_when_events_occur(
             self):
         self.fsm.foo(attribute='test')
-        self.assertTrue(hasattr(self, 'before_foo_event'), 'Callback onbeforefoo did not fire.')
+        self.assertTrue(
+            hasattr(self, 'before_foo_event'), 'Callback onbeforefoo did not fire.')
         self.assertTrue(self.before_foo_event is not None)
         self.assertEqual(self.before_foo_event.attribute, 'test')
         self.fsm.bar(id=123)
-        self.assertTrue(hasattr(self, 'before_bar_event'), 'Callback onbeforebar did not fire.')
+        self.assertTrue(
+            hasattr(self, 'before_bar_event'), 'Callback onbeforebar did not fire.')
         self.assertTrue(self.before_bar_event is not None)
         self.assertEqual(self.before_bar_event.id, 123)
-        self.assertEqual(['before_foo', 'after_foo', 'before_bar', 'after_bar'], self.fired_callbacks)
+        self.assertEqual(
+            ['before_foo', 'after_foo', 'before_bar', 'after_bar'], self.fired_callbacks)
 
     def test_fsm_cancel_transition_when_onbefore_event_callbacks_return_false(self):
         self.fsm.wait()
         self.assertEqual(self.fsm.current, 'sleeping')
 
-
     def test_onenter_state_callbacks_should_fire_with_keyword_arguments_when_state_transitions_occur(self):
         self.fsm.foo(attribute='test')
-        self.assertTrue(hasattr(self, 'enter_fooed_event'), 'Callback onenterfooed did not fire.')
+        self.assertTrue(
+            hasattr(self, 'enter_fooed_event'), 'Callback onenterfooed did not fire.')
         self.assertTrue(self.enter_fooed_event is not None)
         self.assertEqual(self.enter_fooed_event.attribute, 'test')
 
         self.fsm.bar(id=123)
-        self.assertTrue(hasattr(self, 'enter_bared_event'), 'Callback onenterbared did not fire.')
+        self.assertTrue(
+            hasattr(self, 'enter_bared_event'), 'Callback onenterbared did not fire.')
         self.assertTrue(self.enter_bared_event is not None)
         self.assertEqual(self.enter_bared_event.id, 123)
 
     def test_onleave_state_callbacks_should_fire_with_keyword_arguments_when_state_transitions_occur(self):
         self.fsm.foo(attribute='test')
-        self.assertTrue(hasattr(self, 'leave_sleeping_event'), 'Callback onleavesleeping did not fire.')
+        self.assertTrue(hasattr(self, 'leave_sleeping_event'),
+                        'Callback onleavesleeping did not fire.')
         self.assertTrue(self.leave_sleeping_event is not None)
         self.assertEqual(self.leave_sleeping_event.attribute, 'test')
 
         self.fsm.bar(id=123)
-        self.assertTrue(hasattr(self, 'leave_fooed_event'), 'Callback onleavefooed did not fire.')
+        self.assertTrue(
+            hasattr(self, 'leave_fooed_event'), 'Callback onleavefooed did not fire.')
         self.assertTrue(self.leave_fooed_event is not None)
         self.assertEqual(self.leave_fooed_event.id, 123)
 

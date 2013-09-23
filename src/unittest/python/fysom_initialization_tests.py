@@ -33,6 +33,7 @@ from fysom import Fysom
 
 
 class FysomInitializationTests(unittest.TestCase):
+
     def test_should_have_no_state_when_no_initial_state_is_given(self):
         fsm = Fysom({
             'events': [
@@ -62,7 +63,7 @@ class FysomInitializationTests(unittest.TestCase):
             'events': [
                 {'name': 'panic', 'src': 'green', 'dst': 'red'},
                 {'name': 'calm', 'src': 'red', 'dst': 'green'},
-                ]
+            ]
         })
         self.assertEquals(fsm.current, 'green')
 
@@ -72,9 +73,8 @@ class FysomInitializationTests(unittest.TestCase):
             'events': [
                 {'name': 'panic', 'src': 'green', 'dst': 'red'},
                 {'name': 'calm', 'src': 'red', 'dst': 'green'},
-                ]
+            ]
         })
         self.assertEqual(fsm.current, 'none')
         fsm.init()
         self.assertEqual(fsm.current, 'green')
-
