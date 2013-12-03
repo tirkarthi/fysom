@@ -174,7 +174,7 @@ this 'final' state:
 ::
 
     fsm = Fysom({'initial': 'green',
-                 'final': red,
+                 'final': 'red',
                  'events': [
                      {'name': 'panic', 'src': 'green', 'dst': 'red'},
                      {'name': 'calm',  'src': 'red',   'dst': 'green'}]})
