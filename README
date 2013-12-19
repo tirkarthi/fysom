@@ -7,13 +7,9 @@
     :target: https://coveralls.io/r/mriehl/fysom?branch=master
     :alt: Coverage status
 
-.. image:: https://pypip.in/v/fysom/badge.png
-    :target: https://crate.io/packages/fysom/
+.. image:: https://badge.fury.io/py/fysom.png
+    :target: https://badge.fury.io/py/fysom
     :alt: Latest PyPI version
-
-.. image:: https://pypip.in/d/fysom/badge.png
-    :target: https://crate.io/packages/fysom/
-    :alt: Number of PyPI downloads
 
 
 
