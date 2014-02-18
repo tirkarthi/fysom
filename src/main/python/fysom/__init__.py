@@ -246,3 +246,15 @@ class Fysom(object):
             return isinstance(object, basestring)
         except NameError:
             return isinstance(object, str)
+
+    def trigger(self, event):
+        '''
+            Triggers the given event.
+            The event can be triggered by calling the event handler directly, for ex: fsm.eat()
+            but this method will come in handy if the event is determined dynamically and you have
+            the event name to trigger as a string.
+        '''
+        if not hasattr(self, event):
+            raise FysomError(
+                    "There isn't any event registered as %s" % event)
+        return getattr(self, event)()
