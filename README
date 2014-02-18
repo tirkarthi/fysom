@@ -202,7 +202,7 @@ This is also arguably better if you're not sure if the event exists at all
 
     fsm.trigger('warn')  # equivalent to fsm.warn()
     fsm.trigger('unknown')  # FysomError, event does not exist
-    fsm.unknown()
+    fsm.unknown()  #  AttributeError, event does not exist
 
 
 Multiple source and destination states for a single event
