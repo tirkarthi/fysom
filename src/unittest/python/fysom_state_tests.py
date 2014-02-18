@@ -66,6 +66,7 @@ class FysomStateTests(unittest.TestCase):
 
     def test_event_handler_has_name_and_docstring(self):
         self.assertEqual(self.fsm.warm.__name__, "warm", "Event handlers do not have appropriate name.")
+        self.assertNotEqual(self.fsm.warm.__name__, None, "Docstring for event handler is None!")
 
     def test_trigger_should_trigger_the_event_handler(self):
         self.assertEqual(self.fsm.current, "green", "The initial state isn't the expected state.")
