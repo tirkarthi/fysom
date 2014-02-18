@@ -62,6 +62,8 @@ def set_properties(project):
     project.get_property('copy_resources_glob').append('setup.cfg')
     project.get_property('copy_resources_glob').append('README')
 
+    project.set_property('flake8_include_test_sources', True)
+
     project.set_property('distutils_classifiers', [
                          'Development Status :: 5 - Production/Stable',
                          'Intended Audience :: Developers',
