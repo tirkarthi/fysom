@@ -40,7 +40,8 @@ class FysomStateTests(unittest.TestCase):
                 {'name': 'warn', 'src': 'green', 'dst': 'yellow'},
                 {'name': 'panic', 'src': 'yellow', 'dst': 'red'},
                 {'name': 'calm', 'src': 'red', 'dst': 'yellow'},
-                {'name': 'clear', 'src': 'yellow', 'dst': 'green'}
+                {'name': 'clear', 'src': 'yellow', 'dst': 'green'},
+                {'name': 'warm', 'src': 'green', 'dst': 'blue'}
             ]
         })
 
@@ -62,3 +63,11 @@ class FysomStateTests(unittest.TestCase):
         self.assertRaises(FysomError, self.fsm.panic)
         self.assertRaises(FysomError, self.fsm.calm)
         self.assertRaises(FysomError, self.fsm.clear)
+
+    def test_event_handler_has_name_and_docstring(self):
+        self.assertEqual(self.fsm.warm.__name__, "warm", "Event handlers do not have appropriate name.")
+
+    def test_trigger_should_trigger_the_event_handler(self):
+        self.assertEqual(self.fsm.current, "green", "The initial state isn't the expected state.")
+        self.fsm.trigger("warm")
+        self.assertEqual(self.fsm.current, "blue", "The initial state isn't the expected state.")
