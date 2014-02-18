@@ -2,7 +2,7 @@
    :alt: Travis build status image
    :align: left
    :target: https://travis-ci.org/mriehl/fysom
-   
+
 .. image:: https://coveralls.io/repos/mriehl/fysom/badge.png?branch=master
     :target: https://coveralls.io/r/mriehl/fysom?branch=master
     :alt: Coverage status
@@ -178,6 +178,32 @@ this 'final' state:
     fsm.is_finished() # False
     fsm.panic()
     fsm.is_finished() # True
+
+
+Dynamically generated event names
+---------------------------------
+
+Sometimes you have to compute the name of an event you want to trigger on the
+fly. Instead of relying on `getattr` you can use the `trigger` method, which takes
+a string (the event name) as a parameter.
+This is also arguably better if you're not sure if the event exists at all
+(FysomError vs. AttributeError, see below).
+
+::
+
+    from fysom import Fysom
+
+    fsm = Fysom({ 'initial': 'green',
+                  'events': [
+                      {'name': 'warn', 'src': 'green', 'dst': 'yellow'},
+                      {'name': 'panic', 'src': 'yellow', 'dst': 'red'},
+                      {'name': 'calm', 'src': 'red', 'dst': 'yellow'},
+                      {'name': 'clear', 'src': 'yellow', 'dst': 'green'} ] })
+
+    fsm.trigger('warn')  # equivalent to fsm.warn()
+    fsm.trigger('unknown')  # FysomError, event does not exist
+    fsm.unknown()
+
 
 Multiple source and destination states for a single event
 ---------------------------------------------------------
