@@ -193,8 +193,9 @@ class Fysom(object):
                     self.transition()
 
         fn.__name__ = event
-        fn.__doc__ = "Event handler for an {event} event. This event can be fired if the machine is in {states} states.".format(
-            event=event, states=self._map[event].keys())
+        fn.__doc__ = ("Event handler for an {event} event. This event can be " +
+                      "fired if the machine is in {states} states.".format(
+                          event=event, states=self._map[event].keys()))
 
         return fn
 
