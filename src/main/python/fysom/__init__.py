@@ -40,6 +40,7 @@ WILDCARD = '*'
 
 
 class FysomError(Exception):
+
     '''
         Raised whenever an unexpected event gets triggered.
     '''
@@ -47,9 +48,11 @@ class FysomError(Exception):
 
 
 class Fysom(object):
+
     '''
         Wraps the complete finite state machine operations.
     '''
+
     def __init__(self, cfg):
         '''
             Machine construction.
@@ -153,7 +156,6 @@ class Fysom(object):
                 raise FysomError(
                     "event %s inappropriate in current state %s" % (event, self.current))
 
-
             # On event occurance, source will always be the current state.
             src = self.current
             # Finds the destination state, after this event is completed.
@@ -192,7 +194,7 @@ class Fysom(object):
 
         fn.__name__ = event
         fn.__doc__ = "Event handler for an {event} event. This event can be fired if the machine is in {states} states.".format(
-                                                    event=event, states=self._map[event].keys())
+            event=event, states=self._map[event].keys())
 
         return fn
 
@@ -256,5 +258,5 @@ class Fysom(object):
         '''
         if not hasattr(self, event):
             raise FysomError(
-                    "There isn't any event registered as %s" % event)
+                "There isn't any event registered as %s" % event)
         return getattr(self, event)()
