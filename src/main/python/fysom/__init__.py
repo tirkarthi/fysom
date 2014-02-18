@@ -189,6 +189,11 @@ class Fysom(object):
             if self._leave_state(e) is not False:
                 if hasattr(self, 'transition'):
                     self.transition()
+
+        fn.__name__ = event
+        fn.__doc__ = "Event handler for an {event} event. This event can be fired if the machine is in {states} states.".format(
+                                                    event=event, states=self._map[event].keys())
+                    
         return fn
 
     def _before_event(self, e):
