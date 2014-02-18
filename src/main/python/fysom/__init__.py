@@ -84,9 +84,9 @@ class Fysom(object):
     def _apply(self, cfg):
         '''
             Does the heavy lifting of machine construction. More notably:
-             >>> Sets up the initial and finals states.
-             >>> Sets the event methods and callbacks into the same object namespace.
-             >>> Prepares the event to state transitions map. 
+             >> Sets up the initial and finals states.
+             >> Sets the event methods and callbacks into the same object namespace.
+             >> Prepares the event to state transitions map.
         '''
         init = cfg['initial'] if 'initial' in cfg else None
         if self._is_base_string(init):
@@ -193,7 +193,7 @@ class Fysom(object):
         fn.__name__ = event
         fn.__doc__ = "Event handler for an {event} event. This event can be fired if the machine is in {states} states.".format(
                                                     event=event, states=self._map[event].keys())
-                    
+
         return fn
 
     def _before_event(self, e):
