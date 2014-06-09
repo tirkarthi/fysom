@@ -63,7 +63,7 @@ def set_properties(project):
     project.set_property('copy_resources_target', '$dir_dist')
     project.get_property('copy_resources_glob').append('setup.cfg')
     project.get_property('copy_resources_glob').extend(['README',
-                                                        'CHANGELOG.md',
+                                                        'CHANGELOG',
                                                         'MANIFEST.in'])
 
     project.set_property('flake8_include_test_sources', True)
