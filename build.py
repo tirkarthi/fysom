@@ -28,8 +28,6 @@
 #
 from pybuilder.core import use_plugin, init, Author, after
 
-use_plugin('filter_resources')
-use_plugin('copy_resources')
 
 use_plugin('python.core')
 use_plugin('python.install_dependencies')
@@ -40,6 +38,9 @@ use_plugin('python.flake8')
 use_plugin('python.frosted')
 use_plugin('python.pydev')
 
+use_plugin('filter_resources')
+use_plugin('copy_resources')
+
 name = 'fysom'
 url = 'https://github.com/mriehl/fysom'
 license = 'MIT'
@@ -48,7 +49,7 @@ authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
            Author('Maximilien Riehl', 'maximilien.riehl@gmail.com'),
            Author('Stefano', email='')]
 summary = 'pYthOn Finite State Machine'
-version = '1.0.17'
+version = '1.0.18'
 
 default_task = ['analyze',
                 'publish']
@@ -61,11 +62,12 @@ def set_properties(project):
 
     project.set_property('copy_resources_target', '$dir_dist')
     project.get_property('copy_resources_glob').append('setup.cfg')
-    project.get_property('copy_resources_glob').append('README')
+    project.get_property('copy_resources_glob').extend(['README',
+                                                        'CHANGELOG.md',
+                                                        'MANIFEST.in'])
 
     project.set_property('flake8_include_test_sources', True)
     project.set_property('frosted_include_test_sources', True)
-
 
     project.set_property('unittest_module_glob', 'test_*')
 
