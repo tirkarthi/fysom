@@ -64,6 +64,8 @@ def set_properties(project):
 
     project.set_property('flake8_include_test_sources', True)
 
+    project.set_property('unittest_module_glob', 'test_*')
+
     project.set_property('distutils_classifiers', [
                          'Development Status :: 5 - Production/Stable',
                          'Intended Audience :: Developers',

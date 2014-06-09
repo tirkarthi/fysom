@@ -28,7 +28,7 @@
 #
 
 from fysom import Fysom
-from fysom_many_to_many_tests import FysomManyToManyTransitionTests
+from test_many_to_many import FysomManyToManyTransitionTests
 
 
 class FysomWildcardTransitionTests(FysomManyToManyTransitionTests):
