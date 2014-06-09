@@ -94,7 +94,7 @@ def copy_tests_to_dir_dist_so_that_setuppy_includes_them_in_sdist(project, logge
     from shutil import copy
     dir_dist = project.expand_path("$dir_dist")
     dir_source_tests = project.expand_path("$dir_source_unittest_python")
-    dir_dist_tests = os.path.join(dir_dist, "tests")
+    dir_dist_tests = os.path.join(dir_dist, "test")
 
     logger.debug("Copying tests from {0} to {1}".format(dir_source_tests, dir_dist_tests))
 
