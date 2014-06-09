@@ -26,7 +26,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-from pybuilder.core import use_plugin, init, Author
+from pybuilder.core import use_plugin, init, Author, after
 
 use_plugin('filter_resources')
 use_plugin('copy_resources')
@@ -83,3 +83,22 @@ def set_properties_for_teamcity(project):
         project.version, os.environ.get('BUILD_NUMBER', 0))
     project.default_task = ['install_build_dependencies', 'analyze', 'package']
     project.get_property('distutils_commands').append('bdist_rpm')
+
+
+@after("package")
+def copy_tests_to_dir_dist_so_that_setuppy_includes_them_in_sdist(project, logger):
+    import os
+    from shutil import copy
+    dir_dist = project.expand_path("$dir_dist")
+    dir_source_tests = project.expand_path("$dir_source_unittest_python")
+    dir_dist_tests = os.path.join(dir_dist, "tests")
+
+    logger.debug("Copying tests from {0} to {1}".format(dir_source_tests, dir_dist_tests))
+
+    if not os.path.isdir(dir_dist_tests):
+        os.mkdir(dir_dist_tests)
+
+    for test_module in os.listdir(dir_source_tests):
+        test_module = os.path.join(dir_source_tests, test_module)
+        if os.path.isfile(test_module):  # could be __pycache__ for example
+            copy(test_module, dir_dist_tests)
