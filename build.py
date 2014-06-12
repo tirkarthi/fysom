@@ -68,6 +68,7 @@ def set_properties(project):
 
     project.set_property('flake8_include_test_sources', True)
     project.set_property('frosted_include_test_sources', True)
+    project.set_property('verbose', True)
 
     project.set_property('unittest_module_glob', 'test_*')
 
