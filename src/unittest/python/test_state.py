@@ -33,6 +33,7 @@ from fysom import Fysom, FysomError
 
 
 class FysomStateTests(unittest.TestCase):
+
     def setUp(self):
         self.fsm = Fysom({
             'initial': 'green',
@@ -77,6 +78,7 @@ class FysomStateTests(unittest.TestCase):
 
     def test_trigger_should_trigger_the_event_handler_with_args(self):
         self.assertEqual(self.fsm.current, "green", "The initial state isn't the expected state.")
+
         def onblue(event):
             self.assertEqual(event.args, ("any-positional-argument",))
         self.fsm.onblue = onblue
@@ -86,6 +88,7 @@ class FysomStateTests(unittest.TestCase):
 
     def test_trigger_should_trigger_the_event_handler_with_kwargs(self):
         self.assertEqual(self.fsm.current, "green", "The initial state isn't the expected state.")
+
         def onblue(event):
             self.assertEqual(event.keyword_argument, "any-value")
         self.fsm.onblue = onblue
