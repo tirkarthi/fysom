@@ -74,3 +74,21 @@ class FysomStateTests(unittest.TestCase):
         make_callable = lambda: self.fsm.trigger("unknowevent")
         self.assertRaises(FysomError, make_callable)
         self.assertEqual(self.fsm.current, "blue", "The initial state isn't the expected state.")
+
+    def test_trigger_should_trigger_the_event_handler_with_args(self):
+        self.assertEqual(self.fsm.current, "green", "The initial state isn't the expected state.")
+        def onblue(event):
+            self.assertEqual(event.args, ("any-positional-argument",))
+        self.fsm.onblue = onblue
+
+        self.fsm.trigger("warm", "any-positional-argument")
+        self.assertEqual(self.fsm.current, "blue", "The initial state isn't the expected state.")
+
+    def test_trigger_should_trigger_the_event_handler_with_kwargs(self):
+        self.assertEqual(self.fsm.current, "green", "The initial state isn't the expected state.")
+        def onblue(event):
+            self.assertEqual(event.keyword_argument, "any-value")
+        self.fsm.onblue = onblue
+
+        self.fsm.trigger("warm", keyword_argument="any-value")
+        self.assertEqual(self.fsm.current, "blue", "The initial state isn't the expected state.")
