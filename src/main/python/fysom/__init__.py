@@ -250,7 +250,7 @@ class Fysom(object):
         except NameError:
             return isinstance(object, str)
 
-    def trigger(self, event):
+    def trigger(self, event, *args, **kwargs):
         '''
             Triggers the given event.
             The event can be triggered by calling the event handler directly, for ex: fsm.eat()
@@ -260,4 +260,4 @@ class Fysom(object):
         if not hasattr(self, event):
             raise FysomError(
                 "There isn't any event registered as %s" % event)
-        return getattr(self, event)()
+        return getattr(self, event)(*args, **kwargs)
