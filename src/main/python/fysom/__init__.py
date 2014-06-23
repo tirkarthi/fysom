@@ -156,13 +156,13 @@ class Fysom(object):
                 raise FysomError(
                     "event %s inappropriate in current state %s" % (event, self.current))
 
-            # On event occurance, source will always be the current state.
+            # On event occurence, source will always be the current state.
             src = self.current
             # Finds the destination state, after this event is completed.
             dst = ((src in self._map[event] and self._map[event][src]) or
                    WILDCARD in self._map[event] and self._map[event][WILDCARD])
 
-            # Prepares the object will all the meta data to be passed to callbacks.
+            # Prepares the object with all the meta data to be passed to callbacks.
             class _e_obj(object):
                 pass
             e = _e_obj()
@@ -172,13 +172,12 @@ class Fysom(object):
 
             setattr(e, 'args', args)
 
+            # Try to trigger the before event, unless it gets canceled.
+            if self._before_event(e) is False:
+                return
+
+            # Wraps the activities that must constitute a single successful transaction.
             if self.current != dst:
-
-                # Try to trigger the before event, unless it gets canceled.
-                if self._before_event(e) is False:
-                    return
-
-                # Wraps the activities that must constitute a single successful transaction.
                 def _tran():
                     delattr(self, 'transition')
                     self.current = dst
@@ -186,6 +185,9 @@ class Fysom(object):
                     self._change_state(e)
                     self._after_event(e)
                 self.transition = _tran
+            else:
+                # If we're already in the target state, we're done with the event
+                self._after_event(e)
 
             # Hook to perform asynchronous transition.
             if self._leave_state(e) is not False:

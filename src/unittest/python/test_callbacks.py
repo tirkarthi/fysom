@@ -32,6 +32,62 @@ import unittest
 from fysom import Fysom
 
 
+class FysomRepeatedBeforeEventCallbackTests(unittest.TestCase):
+
+    def setUp(self):
+        self.fired = []
+
+        def record_event(event):
+            self.fired.append(event.msg)
+            return 42
+
+        self.fired = []
+        self.fsm = Fysom({
+            'initial': 'notcalled',
+            'events': [
+                {'name': 'multiple', 'src': 'notcalled', 'dst': 'called'},
+                {'name': 'multiple', 'src': 'called', 'dst': 'called'},
+            ],
+            'callbacks': {
+                'onbeforemultiple': record_event
+            }
+        })
+
+    def test_should_fire_onbefore_event_repeatedly(self):
+        self.fsm.multiple(msg="first")
+        self.fsm.multiple(msg="second")
+
+        self.assertEqual(self.fired, ["first", "second"])
+
+
+class FysomRepeatedAfterEventCallbackTests(unittest.TestCase):
+
+    def setUp(self):
+        self.fired = []
+
+        def record_event(event):
+            self.fired.append(event.msg)
+            return 42
+
+        self.fired = []
+        self.fsm = Fysom({
+            'initial': 'notcalled',
+            'events': [
+                {'name': 'multiple', 'src': 'notcalled', 'dst': 'called'},
+                {'name': 'multiple', 'src': 'called', 'dst': 'called'},
+            ],
+            'callbacks': {
+                'onaftermultiple': record_event
+            }
+        })
+
+    def test_should_fire_onafter_event_repeatedly(self):
+        self.fsm.multiple(msg="first")
+        self.fsm.multiple(msg="second")
+
+        self.assertEqual(self.fired, ["first", "second"])
+
+
 class FysomCallbackTests(unittest.TestCase):
 
     def before_foo(self, e):
