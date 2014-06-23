@@ -1,6 +1,11 @@
 Changelog for fysom
 --------------------
 
+* v1.1.0
+  Event callbacks (onbefore_event_|onafter_event_|on_event_) will now trigger
+  when the state does not change.
+  Previously those callbacks would only fire in the case of a state change,
+  so events keeping the FSM in the same state would not fire callbacks at all.
 
 * v1.0.19
   The `trigger` method now accepts any positional arguments and keyword arguments, and passes them to the underlying event method. Pull request by 
