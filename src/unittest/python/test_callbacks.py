@@ -41,7 +41,6 @@ class FysomRepeatedBeforeEventCallbackTests(unittest.TestCase):
             self.fired.append(event.msg)
             return 42
 
-        self.fired = []
         self.fsm = Fysom({
             'initial': 'notcalled',
             'events': [
@@ -69,7 +68,6 @@ class FysomRepeatedAfterEventCallbackTests(unittest.TestCase):
             self.fired.append(event.msg)
             return 42
 
-        self.fired = []
         self.fsm = Fysom({
             'initial': 'notcalled',
             'events': [
