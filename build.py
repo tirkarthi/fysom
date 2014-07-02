@@ -90,6 +90,9 @@ def set_properties_for_teamcity(project):
     project.default_task = ['install_build_dependencies', 'analyze', 'package']
     project.get_property('distutils_commands').append('bdist_rpm')
 
+@init(environments="linux-release")
+def set_properties_for_teamcity(project):
+    project.set_property("distutils_commands", ["egg_info --egg-base=/tmp sdist"])
 
 @after("package")
 def copy_tests_to_dir_dist_so_that_setuppy_includes_them_in_sdist(project, logger):
