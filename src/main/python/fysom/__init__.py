@@ -53,10 +53,65 @@ class Fysom(object):
         Wraps the complete finite state machine operations.
     '''
 
-    def __init__(self, cfg):
+    def __init__(self, cfg={}, initial=None, events=[], callbacks={}, final=None):
         '''
-            Machine construction.
+        Construct a Finite State Machine.
+
+        Arguments:
+
+            cfg         finite state machine specification,
+                        a dictionary with keys 'initial', 'events', 'callbacks', 'final'
+
+            initial     initial state
+
+            events      a list of dictionaries (keys: 'name', 'src', 'dst')
+                        or a list tuples (event name, source state or states,
+                        destination state or states)
+
+            callbacks   a dictionary mapping callback names to functions
+
+            final       a state of the FSM where its is_finished() method returns True
+
+        Named arguments override configuration dictionary.
+
+        Example:
+
+        >>> fsm = Fysom(events=[('tic', 'a', 'b'), ('toc', 'b', 'a')], initial='a')
+        >>> fsm.current
+        'a'
+        >>> fsm.tic()
+        >>> fsm.current
+        'b'
+        >>> fsm.toc()
+        >>> fsm.current
+        'a'
+
         '''
+        cfg = dict(cfg)
+        # override cfg with named arguments
+        if not cfg.has_key("events"):
+            cfg["events"] = []
+        if not cfg.has_key("callbacks"):
+            cfg["callbacks"] = {}
+        if initial:
+            cfg["initial"] = initial
+        if final:
+            cfg["final"] = final
+        if events:
+            cfg["events"].extend(list(events))
+        if callbacks:
+            cfg["callbacks"].update(dict(callbacks))
+        # convert 3-tuples in the event specification to dicts
+        events_dicts = []
+        for e in cfg["events"]:
+            if isinstance(e, dict):
+                events_dicts.append(e)
+            elif hasattr(e, "__iter__"):
+                name, src, dst = list(e)[:3]
+                events_dicts.append({"name": name, "src": src, "dst": dst})
+            else:
+                events_dicts.append(e)
+        cfg["events"] = events_dicts
         self._apply(cfg)
 
     def isstate(self, state):

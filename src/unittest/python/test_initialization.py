@@ -78,3 +78,48 @@ class FysomInitializationTests(unittest.TestCase):
         self.assertEqual(fsm.current, 'none')
         fsm.init()
         self.assertEqual(fsm.current, 'green')
+
+    def test_tuples_as_trasition_spec(self):
+        fsm = Fysom({
+            'initial': 'green',
+            'events': [  # freely mix dicts and tuples
+                {'name': 'warn', 'src': 'green', 'dst': 'yellow'},
+                ('panic', 'yellow', 'red'),
+                ('calm', 'red', 'yellow'),
+                {'name': 'clear', 'src': 'yellow', 'dst': 'green'}
+            ]
+        })
+        fsm.warn()
+        fsm.panic()
+        self.assertEqual(fsm.current, 'red')
+        fsm.calm()
+        fsm.clear()
+        self.assertEqual(fsm.current, 'green')
+
+    def test_kwargs_override_cfg(self):
+        fsm = Fysom({
+            'initial': 'green',
+            'events': [
+                {'name': 'panic', 'src': 'green', 'dst': 'red'},
+                {'name': 'calm', 'src': 'red', 'dst': 'green'},
+            ]},
+            # override initial state and calm event
+            initial='red', events=[('calm', 'red', 'black')])
+        self.assertEqual(fsm.current, "red")
+        fsm.calm()
+        self.assertEqual(fsm.current, "black")
+
+    def test_init_kwargs_only(self):
+        fsm = Fysom(initial='green',
+                    events=[('panic', 'green', 'red'),
+                            ('calm', 'red', 'green')])
+        self.assertEqual(fsm.current, "green")
+        fsm.panic()
+        self.assertEqual(fsm.current, "red")
+        fsm.calm()
+        self.assertEqual(fsm.current, "green")
+
+    def test_final_kwarg(self):
+        fsm = Fysom(initial='eternity', final='eternity')
+        self.assertEqual(fsm.current, 'eternity')
+        self.assertEqual(fsm.is_finished(), True)
