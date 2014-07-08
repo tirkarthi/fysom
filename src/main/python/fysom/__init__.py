@@ -53,7 +53,7 @@ class Fysom(object):
         Wraps the complete finite state machine operations.
     '''
 
-    def __init__(self, cfg={}, initial=None, events=[], callbacks={}, final=None):
+    def __init__(self, cfg={}, initial=None, events=None, callbacks=None, final=None):
         '''
         Construct a Finite State Machine.
 
