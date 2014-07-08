@@ -36,6 +36,9 @@ __maintainer__ = 'Mansour Behabadi'
 __email__ = 'mansour@oxplot.com'
 
 
+import collections
+
+
 WILDCARD = '*'
 
 
@@ -104,13 +107,11 @@ class Fysom(object):
         # convert 3-tuples in the event specification to dicts
         events_dicts = []
         for e in cfg["events"]:
-            if isinstance(e, dict):
+            if isinstance(e, collections.Mapping):
                 events_dicts.append(e)
             elif hasattr(e, "__iter__"):
                 name, src, dst = list(e)[:3]
                 events_dicts.append({"name": name, "src": src, "dst": dst})
-            else:
-                events_dicts.append(e)
         cfg["events"] = events_dicts
         self._apply(cfg)
 
