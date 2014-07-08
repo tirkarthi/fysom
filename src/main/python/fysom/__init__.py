@@ -89,9 +89,9 @@ class Fysom(object):
         '''
         cfg = dict(cfg)
         # override cfg with named arguments
-        if not cfg.has_key("events"):
+        if "events" not in cfg:
             cfg["events"] = []
-        if not cfg.has_key("callbacks"):
+        if "callbacks" not in cfg:
             cfg["callbacks"] = {}
         if initial:
             cfg["initial"] = initial
