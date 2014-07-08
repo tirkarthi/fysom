@@ -141,7 +141,7 @@ take it out of this state:
     fsm.startup()
     print fsm.current # "green"
 
-If you specifiy the name of you initial event (as in all the earlier
+If you specify the name of you initial event (as in all the earlier
 examples), then an implicit 'startup' event will be created for you and
 fired when the state machine is constructed:
 ::
@@ -281,7 +281,7 @@ For convenience, the 2 most useful callbacks can be shortened:
 -  on\_event\_ - convenience shorthand for onafter\_event\_
 -  on\_state\_ - convenience shorthand for onenter\_state\_
 
-In addition, a generic onchangestate() calback can be used to call a
+In addition, a generic onchangestate() callback can be used to call a
 single function for all state changes.
 
 All callbacks will be passed one argument 'e' which is an object with
