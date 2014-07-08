@@ -104,6 +104,24 @@ along with the following members:
 -  fsm.cannot(e) - return True if event s cannot be fired in the current
    state
 
+
+Shorter Syntax
+--------------
+
+It's possible to define event transitions as 3-tuples (event name,
+source state, destination state) rather than dictionaries.
+``Fysom`` constructor accepts also keyword arguments ``initial``,
+``events``, ``callbacks``, and ``final``.
+
+This is a shorter version of the previous example::
+
+    fsm = Fysom(initial='green',
+                events=[('warn',  'green',  'yellow'),
+                        ('panic', 'yellow', 'red'),
+                        ('calm',  'red',    'yellow'),
+                        ('clear', 'yellow', 'green')])
+
+
 Initialization
 --------------
 
