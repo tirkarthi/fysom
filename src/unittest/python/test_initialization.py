@@ -123,3 +123,25 @@ class FysomInitializationTests(unittest.TestCase):
         fsm = Fysom(initial='eternity', final='eternity')
         self.assertEqual(fsm.current, 'eternity')
         self.assertEqual(fsm.is_finished(), True)
+
+    def test_callbacks_kwarg(self):
+        history = []
+
+        def ontic(e):
+            history.append('tic')
+
+        def ontoc(e):
+            history.append('toc')
+
+        fsm = Fysom(initial='left',
+                    events=[('tic', 'left', 'right'),
+                            ('toc', 'right', 'left')],
+                    callbacks={'ontic': ontic,
+                               'ontoc': ontoc})
+
+        fsm.tic()
+        fsm.toc()
+        fsm.tic()
+        fsm.toc()
+
+        self.assertEqual(history, ['tic', 'toc', 'tic', 'toc'])
