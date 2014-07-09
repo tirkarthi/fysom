@@ -1,6 +1,12 @@
 Changelog for fysom
 --------------------
 
+* v1.1.2
+  Extend Fysom constructor to allow for terser FSM specifications. Pull request by [@astanin](https://github.com/astanin).
+
+* v1.1.1
+  Resolved problems with installation on windows.
+
 * v1.1.0
   Event callbacks (onbefore_event_|onafter_event_|on_event_) will now trigger
   when the state does not change.
