@@ -41,7 +41,7 @@ From your friendly neighbourhood cheeseshop
 Developer setup
 ---------------
 
-This module uses the `pybuilder <http://pybuilder.github.com>`_.
+This module uses `PyBuilder <http://pybuilder.github.io>`_.
 ::
 
     sudo pip install pyb_init
