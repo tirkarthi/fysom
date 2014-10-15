@@ -50,6 +50,14 @@ class FysomError(Exception):
     pass
 
 
+class Canceled(FysomError):
+
+    '''
+        Raised when an event is canceled due to the
+        onbeforeevent handler returning False
+    '''
+
+
 class Fysom(object):
 
     '''
@@ -230,7 +238,8 @@ class Fysom(object):
 
             # Try to trigger the before event, unless it gets canceled.
             if self._before_event(e) is False:
-                return
+                raise Canceled(
+                    "Cannot trigger event {0} because the onbefore{0} handler returns False".format(e.event))
 
             # Wraps the activities that must constitute a single successful transaction.
             if self.current != dst:

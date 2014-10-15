@@ -29,7 +29,7 @@
 
 import unittest
 
-from fysom import Fysom
+from fysom import Fysom, Canceled
 
 
 class FysomRepeatedBeforeEventCallbackTests(unittest.TestCase):
@@ -183,7 +183,7 @@ class FysomCallbackTests(unittest.TestCase):
             ['before_foo', 'after_foo', 'before_bar', 'after_bar'], self.fired_callbacks)
 
     def test_fsm_cancel_transition_when_onbefore_event_callbacks_return_false(self):
-        self.fsm.wait()
+        self.assertRaises(Canceled, self.fsm.wait)
         self.assertEqual(self.fsm.current, 'sleeping')
 
     def test_onenter_state_callbacks_should_fire_with_keyword_arguments_when_state_transitions_occur(self):
