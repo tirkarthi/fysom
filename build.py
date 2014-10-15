@@ -49,7 +49,7 @@ authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
            Author('Maximilien Riehl', 'maximilien.riehl@gmail.com'),
            Author('Stefano', email='')]
 summary = 'pYthOn Finite State Machine'
-version = '1.1.2'
+version = '2.0.0'
 
 default_task = ['analyze',
                 'publish']

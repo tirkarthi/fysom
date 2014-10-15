@@ -1,6 +1,10 @@
 Changelog for fysom
 --------------------
 
+* v2.0.0
+  BREAKING CHANGE - Canceling an event by returning `False` from the onbefore<event> callback
+  will now raise `fysom.Canceled` instead of just ignoring the event.
+
 * v1.1.2
   Extend Fysom constructor to allow for terser FSM specifications. Pull request by [@astanin](https://github.com/astanin).
 
