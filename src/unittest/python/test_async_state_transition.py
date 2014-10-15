@@ -48,11 +48,11 @@ class FysomAsynchronousStateTransitionTests(unittest.TestCase):
             'initial': 'foo',
             'events': [
                 {'name': 'footobar', 'src': 'foo', 'dst': 'bar'},
-                {'name': 'bartobar', 'src': 'bar', 'dst': 'bar'}
+                {'name': 'bartobar', 'src': 'bar', 'dst': 'bar'},
             ],
             'callbacks': {
                 'onleavefoo': self.on_leave_foo,
-                'onenterbar': self.on_enter_bar
+                'onenterbar': self.on_enter_bar,
             }
         })
 

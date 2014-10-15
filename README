@@ -273,6 +273,7 @@ following naming conventions:
 You can affect the event in 2 ways:
 
 -  return False from an onbefore\_event\_ handler to cancel the event.
+   This will raise a fysom.Canceled exception.
 -  return False from an onleave\_state\_ handler to perform an
    asynchronous state transition (see next section)
 
