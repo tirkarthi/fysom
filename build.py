@@ -91,7 +91,7 @@ def set_properties_for_teamcity(project):
     project.get_property('distutils_commands').append('bdist_rpm')
 
 @init(environments="linux-release")
-def set_properties_for_teamcity(project):
+def set_properties_for_linux_release(project):
     project.set_property("distutils_commands", ["egg_info --egg-base=/tmp sdist"])
 
 @after("package")
