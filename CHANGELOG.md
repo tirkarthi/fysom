@@ -1,5 +1,11 @@
 Changelog for fysom
 --------------------
+* v2.0.1
+  State re-entry or 'reflexive' callbacks (onreenter_state) called when the start and end state of a transition
+  are the same. This is different to the change in v1.1.0 as the new callback type is for a particular state and not
+  a particular event. This allows individual callbacks for reflexive transitions rather than event callbacks
+  with conditional branches to handle both reflexive and non-reflexive transitions.
+  Pull request by [@mattjml](https://github.com/mattjml)
 
 * v2.0.0
   BREAKING CHANGE - Canceling an event by returning `False` from the onbefore<event> callback
