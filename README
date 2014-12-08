@@ -262,12 +262,13 @@ definition:
 Callbacks
 ---------
 
-4 callbacks are available if your state machine has methods using the
+5 callbacks are available if your state machine has methods using the
 following naming conventions:
 
 -  onbefore\_event\_ - fired before the *event*
 -  onleave\_state\_ - fired when leaving the old *state*
 -  onenter\_state\_ - fired when entering the new *state*
+-  onreenter\_state\_ - fired when reentering the old *state* (a reflexive transition i.e. src == dst)
 -  onafter\_event\_ - fired after the *event*
 
 You can affect the event in 2 ways:

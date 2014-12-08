@@ -250,14 +250,13 @@ class Fysom(object):
                     self._change_state(e)
                     self._after_event(e)
                 self.transition = _tran
-            else:
-                # If we're already in the target state, we're done with the event
-                self._after_event(e)
 
-            # Hook to perform asynchronous transition.
-            if self._leave_state(e) is not False:
-                if hasattr(self, 'transition'):
+                # Hook to perform asynchronous transition.
+                if self._leave_state(e) is not False:
                     self.transition()
+            else:
+                self._reenter_state(e)
+                self._after_event(e)
 
         fn.__name__ = event
         fn.__doc__ = ("Event handler for an {event} event. This event can be " +
@@ -300,6 +299,15 @@ class Fysom(object):
             if hasattr(self, fnname):
                 return getattr(self, fnname)(e)
 
+    def _reenter_state(self, e):
+        '''
+            Executes the callback for onreenter_state_.
+            This allows callbacks following reflexive transitions (i.e. where src == dst)
+        '''
+        fnname = 'onreenter' + e.dst
+        if hasattr(self, fnname):
+            return getattr(self, fnname)(e)
+    
     def _change_state(self, e):
         '''
             A general change state callback. This gets triggered at the time of state transition.

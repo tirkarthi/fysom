@@ -118,6 +118,12 @@ class FysomCallbackTests(unittest.TestCase):
     def on_enter_bared(self, e):
         self.enter_bared_event = e
 
+    def on_reenter_fooed(self, e):
+        self.reenter_fooed_event = e
+
+    def on_reenter_bared(self, e):
+        self.reenter_bared_event = e
+
     def on_leave_sleeping(self, e):
         self.leave_sleeping_event = e
 
@@ -131,7 +137,9 @@ class FysomCallbackTests(unittest.TestCase):
             'initial': 'sleeping',
             'events': [
                 {'name': 'foo', 'src': 'sleeping', 'dst': 'fooed'},
+                {'name': 'foo', 'src': 'fooed', 'dst': 'fooed'},
                 {'name': 'bar', 'src': 'fooed', 'dst': 'bared'},
+                {'name': 'bar', 'src': 'bared', 'dst': 'bared'},
                 {'name': 'baz', 'src': 'bared', 'dst': 'bazed'},
                 {'name': 'wait', 'src': 'sleeping', 'dst': 'waiting'}
             ],
@@ -144,6 +152,8 @@ class FysomCallbackTests(unittest.TestCase):
                 'onbeforewait': self.before_wait,
                 'onenterfooed': self.on_enter_fooed,
                 'onenterbared': self.on_enter_bared,
+                'onreenterfooed': self.on_reenter_fooed,
+                'onreenterbared': self.on_reenter_bared,
                 'onleavesleeping': self.on_leave_sleeping,
                 'onleavefooed': self.on_leave_fooed
             }
@@ -198,6 +208,21 @@ class FysomCallbackTests(unittest.TestCase):
             hasattr(self, 'enter_bared_event'), 'Callback onenterbared did not fire.')
         self.assertTrue(self.enter_bared_event is not None)
         self.assertEqual(self.enter_bared_event.id, 123)
+
+    def test_onreenter_state_callbacks_should_fire_with_keyword_arguments_when_state_transitions_occur(self):
+        self.fsm.foo(attribute='testfail')
+        self.fsm.foo(attribute='testpass')
+        self.assertTrue(
+            hasattr(self, 'reenter_fooed_event'), 'Callback onreenterfooed did not fire.')
+        self.assertTrue(self.reenter_fooed_event is not None)
+        self.assertEqual(self.reenter_fooed_event.attribute, 'testpass')
+
+        self.fsm.bar(id=1234)
+        self.fsm.bar(id=4321)
+        self.assertTrue(
+            hasattr(self, 'reenter_bared_event'), 'Callback onreenterbared did not fire.')
+        self.assertTrue(self.reenter_bared_event is not None)
+        self.assertEqual(self.reenter_bared_event.id, 4321)
 
     def test_onleave_state_callbacks_should_fire_with_keyword_arguments_when_state_transitions_occur(self):
         self.fsm.foo(attribute='test')
