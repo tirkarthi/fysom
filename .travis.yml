@@ -8,7 +8,7 @@ python:
   - "pypy"
 
 install:
-  - pip install pybuilder --use-mirrors
+  - pip install pybuilder
   - pip install coveralls
   - pyb install_dependencies
 script: "pyb verify analyze && coverage run --source=src/main/python/fysom `which pyb` run_unit_tests"
