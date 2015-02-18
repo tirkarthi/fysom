@@ -133,8 +133,10 @@ class Fysom(object):
         '''
             Returns if the given event be fired in the current machine state.
         '''
-        return (event in self._map and ((self.current in self._map[event]) or WILDCARD in self._map[event])
-                and not hasattr(self, 'transition'))
+        return (
+                event in self._map and
+                ((self.current in self._map[event]) or WILDCARD in self._map[event]) and not
+                hasattr(self, 'transition'))
 
     def cannot(self, event):
         '''
@@ -307,7 +309,7 @@ class Fysom(object):
         fnname = 'onreenter' + e.dst
         if hasattr(self, fnname):
             return getattr(self, fnname)(e)
-    
+
     def _change_state(self, e):
         '''
             A general change state callback. This gets triggered at the time of state transition.
