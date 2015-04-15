@@ -74,5 +74,5 @@ class FysomGarbageCollectionTests(unittest.TestCase):
         obj.clear()
         del obj
 
-        self.assertEqual(filter(lambda o : isinstance(o, MyTestObject),
-            gc.get_objects()), [])
+        self.assertEqual(list(filter(lambda o : isinstance(o, MyTestObject),
+            gc.get_objects())), [])

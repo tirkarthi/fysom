@@ -66,8 +66,14 @@ def _weak_callback(func):
         # Don't hold a reference to the object, otherwise we might create
         # a cycle.
         # Reference: http://stackoverflow.com/a/6975682
-        obj_ref  = weakref.ref(func.im_self)
-        func_ref = weakref.ref(func.im_func)
+        try:
+            # Python 2.x case
+            obj_ref  = weakref.ref(func.im_self)
+            func_ref = weakref.ref(func.im_func)
+        except AttributeError:
+            # Python 3.x case
+            obj_ref  = weakref.ref(func.__self__)
+            func_ref = weakref.ref(func.__func__)
         func = None
         def _callback(*args, **kwargs):
             obj = obj_ref()
