@@ -76,3 +76,46 @@ class FysomGarbageCollectionTests(unittest.TestCase):
 
         self.assertEqual(list(filter(lambda o : isinstance(o, MyTestObject),
             gc.get_objects())), [])
+
+    def test_gc_should_not_break_callback(self):
+        class MyTestObject(object):
+            def __init__(self):
+                self._states = []
+                self._fsm = None
+
+            def warn(self):
+                self._fsm.warn()
+            def panic(self):
+                self._fsm.panic()
+            def calm(self):
+                self._fsm.calm()
+            def clear(self):
+                self._fsm.clear()
+
+            def _on_green(self, *args, **kwargs):
+                self._states.append('green')
+            def _on_yellow(self, *args, **kwargs):
+                self._states.append('yellow')
+            def _on_red(self, *args, **kwargs):
+                self._states.append('red')
+
+        obj = MyTestObject()
+        fsm = Fysom({
+            'initial': 'green',
+            'events': [
+                {'name': 'warn', 'src': 'green', 'dst': 'yellow'},
+                {'name': 'panic', 'src': 'yellow', 'dst': 'red'},
+                {'name': 'calm', 'src': 'red', 'dst': 'yellow'},
+                {'name': 'clear', 'src': 'yellow', 'dst': 'green'}
+            ],
+            'callbacks': {
+                'ongreen':  obj._on_green,
+                'onyellow': obj._on_yellow,
+                'onred':    obj._on_red
+            }
+        })
+        obj._fsm = fsm
+        obj.warn()
+        obj.clear()
+        del obj
+        fsm.warn()

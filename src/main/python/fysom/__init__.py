@@ -30,6 +30,7 @@
 import collections
 import weakref
 import types
+import sys
 
 __author__ = 'Mansour Behabadi'
 __copyright__ = 'Copyright 2011, Mansour Behabadi and Jake Gordon'
@@ -66,11 +67,13 @@ def _weak_callback(func):
         # Don't hold a reference to the object, otherwise we might create
         # a cycle.
         # Reference: http://stackoverflow.com/a/6975682
-        try:
+        # Tell coveralls to not cover this if block, as the Python 2.x case
+        # doesn't test the 3.x code and vice versa.
+        if sys.version_info[0] < 3: # pragma: no cover
             # Python 2.x case
             obj_ref  = weakref.ref(func.im_self)
             func_ref = weakref.ref(func.im_func)
-        except AttributeError:
+        else: # pragma: no cover
             # Python 3.x case
             obj_ref  = weakref.ref(func.__self__)
             func_ref = weakref.ref(func.__func__)
