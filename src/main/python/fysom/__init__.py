@@ -72,11 +72,11 @@ def _weak_callback(func):
         # doesn't test the 3.x code and vice versa.
         if sys.version_info[0] < 3:  # pragma: no cover
             # Python 2.x case
-            obj_ref  = weakref.ref(func.im_self)
+            obj_ref = weakref.ref(func.im_self)
             func_ref = weakref.ref(func.im_func)
         else:  # pragma: no cover
             # Python 3.x case
-            obj_ref  = weakref.ref(func.__self__)
+            obj_ref = weakref.ref(func.__self__)
             func_ref = weakref.ref(func.__func__)
         func = None
 
