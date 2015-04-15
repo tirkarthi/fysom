@@ -28,7 +28,9 @@
 #
 
 import collections
-
+import weakref
+import types
+import sys
 
 __author__ = 'Mansour Behabadi'
 __copyright__ = 'Copyright 2011, Mansour Behabadi and Jake Gordon'
@@ -57,6 +59,35 @@ class Canceled(FysomError):
         onbeforeevent handler returning False
     '''
 
+def _weak_callback(func):
+    '''
+    Store a weak reference to a callback or method.
+    '''
+    if isinstance(func, types.MethodType):
+        # Don't hold a reference to the object, otherwise we might create
+        # a cycle.
+        # Reference: http://stackoverflow.com/a/6975682
+        # Tell coveralls to not cover this if block, as the Python 2.x case
+        # doesn't test the 3.x code and vice versa.
+        if sys.version_info[0] < 3: # pragma: no cover
+            # Python 2.x case
+            obj_ref  = weakref.ref(func.im_self)
+            func_ref = weakref.ref(func.im_func)
+        else: # pragma: no cover
+            # Python 3.x case
+            obj_ref  = weakref.ref(func.__self__)
+            func_ref = weakref.ref(func.__func__)
+        func = None
+        def _callback(*args, **kwargs):
+            obj = obj_ref()
+            func = func_ref()
+            if (obj is None) or (func is None):
+                return
+            return func(obj, *args, **kwargs)
+        return _callback
+    else:
+        # We should be safe enough holding callback functions ourselves.
+        return func
 
 class Fysom(object):
 
@@ -198,7 +229,7 @@ class Fysom(object):
 
         # For all the callbacks, register them into the current object namespace.
         for name in callbacks:
-            setattr(self, name, callbacks[name])
+            setattr(self, name, _weak_callback(callbacks[name]))
 
         self.current = 'none'
 
