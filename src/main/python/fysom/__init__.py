@@ -70,11 +70,11 @@ def _weak_callback(func):
         # Reference: http://stackoverflow.com/a/6975682
         # Tell coveralls to not cover this if block, as the Python 2.x case
         # doesn't test the 3.x code and vice versa.
-        if sys.version_info[0] < 3: # pragma: no cover
+        if sys.version_info[0] < 3:  # pragma: no cover
             # Python 2.x case
             obj_ref  = weakref.ref(func.im_self)
             func_ref = weakref.ref(func.im_func)
-        else: # pragma: no cover
+        else:  # pragma: no cover
             # Python 3.x case
             obj_ref  = weakref.ref(func.__self__)
             func_ref = weakref.ref(func.__func__)
@@ -226,17 +226,20 @@ class Fysom(object):
         for e in events:
             add(e)
 
-        # For all the events as present in machine map, construct the event handler.
+        # For all the events as present in machine map, construct the event
+        # handler.
         for name in tmap:
             setattr(self, name, self._build_event(name))
 
-        # For all the callbacks, register them into the current object namespace.
+        # For all the callbacks, register them into the current object
+        # namespace.
         for name in callbacks:
             setattr(self, name, _weak_callback(callbacks[name]))
 
         self.current = 'none'
 
-        # If initialization need not be deferred, trigger the event for transition to initial state.
+        # If initialization need not be deferred, trigger the event for
+        # transition to initial state.
         if init and 'defer' not in init:
             getattr(self, init['event'])()
 
@@ -262,7 +265,8 @@ class Fysom(object):
             dst = ((src in self._map[event] and self._map[event][src]) or
                    WILDCARD in self._map[event] and self._map[event][WILDCARD])
 
-            # Prepares the object with all the meta data to be passed to callbacks.
+            # Prepares the object with all the meta data to be passed to
+            # callbacks.
             class _e_obj(object):
                 pass
             e = _e_obj()
@@ -277,7 +281,8 @@ class Fysom(object):
                 raise Canceled(
                     "Cannot trigger event {0} because the onbefore{0} handler returns False".format(e.event))
 
-            # Wraps the activities that must constitute a single successful transaction.
+            # Wraps the activities that must constitute a single successful
+            # transaction.
             if self.current != dst:
                 def _tran():
                     delattr(self, 'transition')
