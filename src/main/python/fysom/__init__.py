@@ -59,6 +59,7 @@ class Canceled(FysomError):
         onbeforeevent handler returning False
     '''
 
+
 def _weak_callback(func):
     '''
     Store a weak reference to a callback or method.
@@ -78,6 +79,7 @@ def _weak_callback(func):
             obj_ref  = weakref.ref(func.__self__)
             func_ref = weakref.ref(func.__func__)
         func = None
+
         def _callback(*args, **kwargs):
             obj = obj_ref()
             func = func_ref()
@@ -88,6 +90,7 @@ def _weak_callback(func):
     else:
         # We should be safe enough holding callback functions ourselves.
         return func
+
 
 class Fysom(object):
 

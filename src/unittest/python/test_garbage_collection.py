@@ -32,10 +32,12 @@ import gc
 
 from fysom import Fysom
 
+
 class FysomGarbageCollectionTests(unittest.TestCase):
 
     def test_should_not_create_circular_ref(self):
         class MyTestObject(object):
+
             def __init__(self):
                 self._states = []
                 self._fsm = Fysom({
@@ -55,17 +57,22 @@ class FysomGarbageCollectionTests(unittest.TestCase):
 
             def warn(self):
                 self._fsm.warn()
+
             def panic(self):
                 self._fsm.panic()
+
             def calm(self):
                 self._fsm.calm()
+
             def clear(self):
                 self._fsm.clear()
 
             def _on_green(self, *args, **kwargs):
                 self._states.append('green')
+
             def _on_yellow(self, *args, **kwargs):
                 self._states.append('yellow')
+
             def _on_red(self, *args, **kwargs):
                 self._states.append('red')
 
@@ -74,28 +81,34 @@ class FysomGarbageCollectionTests(unittest.TestCase):
         obj.clear()
         del obj
 
-        self.assertEqual(list(filter(lambda o : isinstance(o, MyTestObject),
-            gc.get_objects())), [])
+        self.assertEqual(list(filter(lambda o: isinstance(o, MyTestObject),
+                                     gc.get_objects())), [])
 
     def test_gc_should_not_break_callback(self):
         class MyTestObject(object):
+
             def __init__(self):
                 self._states = []
                 self._fsm = None
 
             def warn(self):
                 self._fsm.warn()
+
             def panic(self):
                 self._fsm.panic()
+
             def calm(self):
                 self._fsm.calm()
+
             def clear(self):
                 self._fsm.clear()
 
             def _on_green(self, *args, **kwargs):
                 self._states.append('green')
+
             def _on_yellow(self, *args, **kwargs):
                 self._states.append('yellow')
+
             def _on_red(self, *args, **kwargs):
                 self._states.append('red')
 
