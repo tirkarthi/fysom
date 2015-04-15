@@ -1,5 +1,15 @@
 Changelog for fysom
 --------------------
+* v2.1.0
+  In cases where a class has a state machine instance as a member and
+  uses methods for callbacks, the dependencies between the parent class and the
+  child state machine created cycles in the garbage collector.
+
+  In order to break these cycles, we modified the state machine to store weak
+  references to the method. For non-method functions, we can store these safely
+  since the function itself should not hold a reference to the state machine.
+  Pull request by [sjlongland](https://github.com/sjlongland)
+
 * v2.0.1
   State re-entry or 'reflexive' callbacks (onreenter_state) called when the start and end state of a transition
   are the same. This is different to the change in v1.1.0 as the new callback type is for a particular state and not
