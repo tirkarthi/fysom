@@ -168,9 +168,9 @@ class Fysom(object):
             Returns if the given event be fired in the current machine state.
         '''
         return (
-                event in self._map and
-                ((self.current in self._map[event]) or WILDCARD in self._map[event]) and not
-                hasattr(self, 'transition'))
+            event in self._map and
+            ((self.current in self._map[event]) or WILDCARD in self._map[event]) and not
+            hasattr(self, 'transition'))
 
     def cannot(self, event):
         '''
