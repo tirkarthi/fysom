@@ -259,6 +259,20 @@ definition:
                      {'name': 'eat_a_lot', 'src': '*', 'dst': 'sick'},
                      {'name': 'rest', 'dst': 'hungry'}]})
 
+NOTE if an event will not change the current state, you can specify destination
+using the '=' symbol. It's useful when using wildcard source or multiply sources:
+::
+
+    fsm = Fysom({'initial': 'hungry',
+                 'events': [
+                     {'name': 'eat', 'src': 'hungry', 'dst': 'satisfied'},
+                     {'name': 'eat', 'src': 'satisfied', 'dst': 'full'},
+                     {'name': 'eat', 'src': 'full', 'dst': 'sick'},
+                     {'name': 'eat_a_little', 'src': '*', 'dst': '='},
+                     {'name': 'eat_a_little', 'src': ['full', 'satisfied'], 'dst': '='},
+                     {'name': 'eat_a_little', 'src': 'hungry', 'dst': '='},
+                     {'name': 'rest', 'dst': 'hungry'}]})
+
 Callbacks
 ---------
 
