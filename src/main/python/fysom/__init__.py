@@ -42,6 +42,7 @@ __email__ = 'mansour@oxplot.com'
 
 
 WILDCARD = '*'
+SAME_DST = '='
 
 
 class FysomError(Exception):
@@ -264,6 +265,8 @@ class Fysom(object):
             # Finds the destination state, after this event is completed.
             dst = ((src in self._map[event] and self._map[event][src]) or
                    WILDCARD in self._map[event] and self._map[event][WILDCARD])
+            if dst == SAME_DST:
+                dst = src
 
             # Prepares the object with all the meta data to be passed to
             # callbacks.
