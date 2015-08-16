@@ -1,5 +1,9 @@
 Changelog for fysom
 --------------------
+* v2.1.2
+  Add special symbol for dst state equals to src state.
+  Pull request by [irpab](https://github.com/irpab)
+
 * v2.1.0
   In cases where a class has a state machine instance as a member and
   uses methods for callbacks, the dependencies between the parent class and the
