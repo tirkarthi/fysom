@@ -302,7 +302,7 @@ class Fysom(object):
                 self._reenter_state(e)
                 self._after_event(e)
 
-        fn.__name__ = event
+        fn.__name__ = str(event)
         fn.__doc__ = ("Event handler for an {event} event. This event can be " +
                       "fired if the machine is in {states} states.".format(
                           event=event, states=self._map[event].keys()))
