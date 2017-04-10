@@ -99,7 +99,8 @@ class Fysom(object):
         Wraps the complete finite state machine operations.
     '''
 
-    def __init__(self, cfg={}, initial=None, events=None, callbacks=None, final=None):
+    def __init__(self, cfg={}, initial=None, events=None, callbacks=None,
+                 final=None, **kwargs):
         '''
         Construct a Finite State Machine.
 
@@ -133,6 +134,8 @@ class Fysom(object):
         'a'
 
         '''
+        if (sys.version_info[0] >= 3):
+            super().__init__(**kwargs)
         cfg = dict(cfg)
         # override cfg with named arguments
         if "events" not in cfg:
