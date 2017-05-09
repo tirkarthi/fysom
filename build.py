@@ -47,7 +47,7 @@ license = 'MIT'
 authors = [Author('Mansour Behabadi', 'mansour@oxplot.com'),
            Author('Jake Gordon', 'jake@codeincomplete.com'),
            Author('Maximilien Riehl', 'maximilien.riehl@gmail.com'),
-           Author('Stefano', email='')]
+           Author('Stefano', email='unknown@domain.invalid')]
 summary = 'pYthOn Finite State Machine'
 version = '2.1.4'
 
