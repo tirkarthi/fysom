@@ -26,7 +26,7 @@ Synopsis
 
 This is basically Mansours' implementation with unit tests and a build process added.
 It's also on PyPi (``pip install fysom``).
-Fysom is built and tested on python 2.6 to 3.3 and PyPy.
+Fysom is built and tested on python 2.6 to 3.5 and PyPy.
 
 Installation
 ============
