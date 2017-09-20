@@ -28,6 +28,7 @@
 #
 
 import collections
+import functools
 import weakref
 import types
 import sys
@@ -49,8 +50,13 @@ class FysomError(Exception):
 
     '''
         Raised whenever an unexpected event gets triggered.
+        Optionally the event object can be attached to the exception
+        in case of sharing event data.
     '''
-    pass
+
+    def __init__(self, msg, event=None):
+        super(FysomError, self).__init__(msg)
+        self.event = event
 
 
 class Canceled(FysomError):
@@ -383,3 +389,242 @@ class Fysom(object):
             raise FysomError(
                 "There isn't any event registered as %s" % event)
         return getattr(self, event)(*args, **kwargs)
+
+
+class FysomGlobalMixin(object):
+    GSM = None  # global state machine instance, override this
+
+    def __getattribute__(self, attr):
+        '''
+            Proxy public event methods to global machine if available.
+        '''
+        try:
+            return super(FysomGlobalMixin, self).__getattribute__(attr)
+        except AttributeError as err:
+            if not attr.startswith('_'):
+                gsm_attr = getattr(self.GSM, attr)
+                if callable(gsm_attr):
+                    return functools.partial(gsm_attr, self)
+            raise
+
+    @property
+    def current(self):
+        '''
+            Simulate the behavior of Fysom's "current" attribute.
+        '''
+        return self.GSM.current(self)
+
+    @current.setter
+    def current(self, state):
+        setattr(self, self.GSM.state_field, state)
+
+
+class FysomGlobal(object):
+
+    def __init__(self, cfg={}, initial=None, events=None, callbacks=None,
+                 final=None, state_field=None, **kwargs):
+        if sys.version_info[0] >= 3:
+            super().__init__(**kwargs)
+        cfg = dict(cfg)
+
+        # state_field is required for global machine
+        if not state_field:
+            raise FysomError('state_field required for global machine')
+        self.state_field = state_field
+
+        # unsupported features in global machine
+        if callbacks or "callbacks" in cfg:
+            raise FysomError("callbacks unsupported for global machine")
+        if initial or "initial" in cfg:
+            raise FysomError("initial state unsupported for global machine")
+
+        if "events" not in cfg:
+            cfg["events"] = []
+        if events:
+            cfg["events"].extend(list(events))
+        if final:
+            cfg["final"] = final
+        # convert 3-tuples in the event specification to dicts
+        events_dicts = []
+        for e in cfg['events']:
+            if isinstance(e, collections.Mapping):
+                events_dicts.append(e)
+            elif hasattr(e, "__iter__"):
+                name, src, dst = list(e)[:3]
+                events_dicts.append({"name": name, "src": src, "dst": dst})
+        cfg["events"] = events_dicts
+
+        self._map = {}  # different with Fysom's _map attribute
+        self._final = None
+        self._apply(cfg)
+
+    def _apply(self, cfg):
+        self._final = cfg.get('final')
+
+        events = cfg.get('events', [])
+        tmap = self._map
+
+        def add(e):
+            if 'src' in e:
+                src = [e['src']] if self._is_base_string(
+                    e['src']) else e['src']
+            else:
+                src = [WILDCARD]
+
+            _e = {'src': set(src), 'dst': e['dst']}
+            conditions = e.get('conditions')
+            if conditions:
+                _e['conditions'] = _c = []
+                if self._is_base_string(conditions):
+                    _c.append({True: conditions})
+                else:
+                    for cond in conditions:
+                        if self._is_base_string(cond):
+                            _c.append({True: cond})
+                        else:
+                            _c.append(cond)
+            tmap[e['name']] = _e
+
+        for e in events:
+            add(e)
+
+        for name in tmap:
+            setattr(self, name, self._build_event(name))
+
+    def _build_event(self, event):
+        def fn(obj, *args, **kwargs):
+            if not self.can(obj, event):
+                raise FysomError(
+                    'event %s inappropriate in current state %s'
+                    % (event, self.current(obj)))
+
+            # Prepare the event object with all the meta data to pas through.
+            # On event occurrence, source will always be the current state.
+            e = self._e_obj()
+            e.fsm, e.obj, e.event, e.src, e.dst = (
+                self, obj, event, self.current(obj), self._map[event]['dst'])
+            for k, v in kwargs.items():
+                setattr(e, k, v)
+            setattr(e, 'args', args)
+
+            # check conditions first, event dst may change during
+            # checking conditions
+            for c in self._map[event].get('conditions', ()):
+                target = True in c
+                cond = c[target]
+                _c_r = self._check_condition(obj, cond, target, e)
+                if not _c_r:
+                    if 'else' in c:
+                        e.dst = c['else']
+                        break
+                    else:
+                        raise Canceled(
+                            'Cannot trigger event {0} because the {1} '
+                            'condition not returns {2}'.format(
+                                event, cond, target), e
+                        )
+
+            # try to trigger the before event, unless it gets cancelled.
+            if self._before_event(obj, e):
+                raise Canceled(
+                    'Cannot trigger event {0} because the onbefore{0} '
+                    'handler returns False'.format(event), e)
+
+            # wraps the activities that must constitute a single transaction
+            if self.current(obj) != e.dst:
+                def _trans():
+                    delattr(obj, 'transition')
+                    setattr(obj, self.state_field, e.dst)
+                    self._enter_state(obj, e)
+                    self._change_state(obj, e)
+                    self._after_event(obj, e)
+                obj.transition = _trans
+
+                # Hook to perform asynchronous transition
+                if self._leave_state(obj, e) is not False:
+                    obj.transition()
+            else:
+                self._reenter_state(obj, e)
+                self._after_event(obj, e)
+
+        fn.__name__ = str(event)
+        fn.__doc__ = (
+            "Event handler for an {event} event. This event can be "
+            "fired if the machine is in {states} states.".format(
+                event=event, states=self._map[event]['src']))
+
+        return fn
+
+    class _e_obj(object):
+        pass
+
+    @staticmethod
+    def _is_base_string(object):
+        try:
+            return isinstance(object, basestring)  # noqa
+        except NameError:
+            return isinstance(object, str)  # noqa
+
+    @staticmethod
+    def _check_condition(obj, func, target, e):
+        return getattr(obj, func)(e) is target
+
+    @staticmethod
+    def _before_event(obj, e):
+        fnname = 'onbefore' + e.event
+        if hasattr(obj, fnname):
+            return getattr(obj, fnname)(e)
+
+    @staticmethod
+    def _after_event(obj, e):
+        for fnname in ['onafter' + e.event, 'on' + e.event]:
+            if hasattr(obj, fnname):
+                return getattr(obj, fnname)(e)
+
+    @staticmethod
+    def _leave_state(obj, e):
+        fnname = 'onleave' + e.src
+        if hasattr(obj, fnname):
+            return getattr(obj, fnname)(e)
+
+    @staticmethod
+    def _enter_state(obj, e):
+        for fnname in ['onenter' + e.dst, 'on' + e.dst]:
+            if hasattr(obj, fnname):
+                return getattr(obj, fnname)(e)
+
+    @staticmethod
+    def _reenter_state(obj, e):
+        fnname = 'onreenter' + e.dst
+        if hasattr(obj, fnname):
+            return getattr(obj, fnname)(e)
+
+    @staticmethod
+    def _change_state(obj, e):
+        fnname = 'onchangestate'
+        if hasattr(obj, fnname):
+            return getattr(obj, fnname)(e)
+
+    def current(self, obj):
+        return getattr(obj, self.state_field) or 'none'
+
+    def isstate(self, obj, state):
+        return self.current(obj) == state
+
+    def can(self, obj, event):
+        if event not in self._map or hasattr(obj, 'transition'):
+            return False
+        src = self._map[event]['src']
+        return self.current(obj) in src or WILDCARD in src
+
+    def cannot(self, obj, event):
+        return not self.can(obj, event)
+
+    def is_finished(self, obj):
+        return self._final and (self.current(obj) == self._final)
+
+    def trigger(self, obj, event, *args, **kwargs):
+        if not hasattr(self, event):
+            raise FysomError(
+                "There isn't any event registered as %s" % event)
+        return getattr(self, event)(obj, *args, **kwargs)
