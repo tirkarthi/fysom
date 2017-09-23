@@ -398,6 +398,13 @@ class Fysom(object):
 class FysomGlobalMixin(object):
     GSM = None  # global state machine instance, override this
 
+    def __init__(self, *args, **kwargs):
+        super(FysomGlobalMixin, self).__init__(*args, **kwargs)
+        if self.is_state('none'):
+            _initial = self.GSM._initial
+            if _initial and not _initial.get('defer'):
+                self.trigger(_initial['event'])
+
     def __getattribute__(self, attr):
         '''
             Proxy public event methods to global machine if available.
@@ -436,14 +443,12 @@ class FysomGlobal(object):
             raise FysomError('state_field required for global machine')
         self.state_field = state_field
 
-        # unsupported features in global machine
-        if initial or "initial" in cfg:
-            raise FysomError("initial state unsupported for global machine")
-
         if "events" not in cfg:
             cfg["events"] = []
         if "callbacks" not in cfg:
             cfg["callbacks"] = {}
+        if initial:
+            cfg['initial'] = initial
         if events:
             cfg["events"].extend(list(events))
         if callbacks:
@@ -462,12 +467,11 @@ class FysomGlobal(object):
 
         self._map = {}  # different with Fysom's _map attribute
         self._callbacks = {}
+        self._initial = None
         self._final = None
         self._apply(cfg)
 
     def _apply(self, cfg):
-        self._final = cfg.get('final')
-
         def add(e):
             if 'src' in e:
                 src = [e['src']] if self._is_base_string(
@@ -488,6 +492,19 @@ class FysomGlobal(object):
                         else:
                             _c.append(cond)
             self._map[e['name']] = _e
+
+        initial = cfg['initial'] if 'initial' in cfg else None
+        if self._is_base_string(initial):
+            initial = {'state': initial}
+        if initial:
+            if 'event' not in initial:
+                initial['event'] = 'startup'
+            self._initial = initial
+            add({'name': initial['event'],
+                 'src': 'none', 'dst': initial['state']})
+
+        if 'final' in cfg:
+            self._final = cfg['final']
 
         for e in cfg['events']:
             add(e)
@@ -510,10 +527,10 @@ class FysomGlobal(object):
             e = self._e_obj()
             e.fsm, e.obj, e.event, e.src, e.dst = (
                 self, obj, event, self.current(obj), self._map[event]['dst'])
+            setattr(e, 'args', args)
             setattr(e, 'kwargs', kwargs)
             for k, v in kwargs.items():
                 setattr(e, k, v)
-            setattr(e, 'args', args)
 
             # check conditions first, event dst may change during
             # checking conditions
