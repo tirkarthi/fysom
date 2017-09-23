@@ -437,20 +437,22 @@ class FysomGlobal(object):
         self.state_field = state_field
 
         # unsupported features in global machine
-        if callbacks or "callbacks" in cfg:
-            raise FysomError("callbacks unsupported for global machine")
         if initial or "initial" in cfg:
             raise FysomError("initial state unsupported for global machine")
 
         if "events" not in cfg:
             cfg["events"] = []
+        if "callbacks" not in cfg:
+            cfg["callbacks"] = {}
         if events:
             cfg["events"].extend(list(events))
+        if callbacks:
+            cfg["callbacks"].update(dict(callbacks))
         if final:
             cfg["final"] = final
         # convert 3-tuples in the event specification to dicts
         events_dicts = []
-        for e in cfg['events']:
+        for e in cfg["events"]:
             if isinstance(e, collections.Mapping):
                 events_dicts.append(e)
             elif hasattr(e, "__iter__"):
@@ -459,14 +461,12 @@ class FysomGlobal(object):
         cfg["events"] = events_dicts
 
         self._map = {}  # different with Fysom's _map attribute
+        self._callbacks = {}
         self._final = None
         self._apply(cfg)
 
     def _apply(self, cfg):
         self._final = cfg.get('final')
-
-        events = cfg.get('events', [])
-        tmap = self._map
 
         def add(e):
             if 'src' in e:
@@ -487,13 +487,16 @@ class FysomGlobal(object):
                             _c.append({True: cond})
                         else:
                             _c.append(cond)
-            tmap[e['name']] = _e
+            self._map[e['name']] = _e
 
-        for e in events:
+        for e in cfg['events']:
             add(e)
 
-        for name in tmap:
-            setattr(self, name, self._build_event(name))
+        for event in self._map:
+            setattr(self, event, self._build_event(event))
+
+        for name, callback in cfg['callbacks'].items():
+            self._callbacks[name] = _weak_callback(callback)
 
     def _build_event(self, event):
         def fn(obj, *args, **kwargs):
@@ -570,49 +573,43 @@ class FysomGlobal(object):
         except NameError:
             return isinstance(object, str)  # noqa
 
-    @staticmethod
-    def _check_condition(obj, func, target, e):
+    def _do_callbacks(self, obj, callbacks, *args, **kwargs):
+        for cb in callbacks:
+            if cb in self._callbacks:
+                return self._callbacks[cb](*args, **kwargs)
+            if hasattr(obj, cb):
+                return getattr(obj, cb)(*args, **kwargs)
+
+    def _check_condition(self, obj, func, target, e):
         if callable(func):
             return func(e) is target
-        return getattr(obj, func)(e) is target
+        return self._do_callbacks(obj, [func], e) is target
 
-    @staticmethod
-    def _before_event(obj, e):
-        for fnname in ['onbefore' + e.event, 'on_before_' + e.event]:
-            if hasattr(obj, fnname):
-                return getattr(obj, fnname)(e)
+    def _before_event(self, obj, e):
+        callbacks = ['onbefore' + e.event, 'on_before_' + e.event]
+        return self._do_callbacks(obj, callbacks, e)
 
-    @staticmethod
-    def _after_event(obj, e):
-        for fnname in ['onafter' + e.event, 'on' + e.event,
-                       'on_after_' + e.event, 'on_' + e.event]:
-            if hasattr(obj, fnname):
-                return getattr(obj, fnname)(e)
+    def _after_event(self, obj, e):
+        callbacks = ['onafter' + e.event, 'on' + e.event,
+                     'on_after_' + e.event, 'on_' + e.event]
+        return self._do_callbacks(obj, callbacks, e)
 
-    @staticmethod
-    def _leave_state(obj, e):
-        for fnname in ['onleave' + e.src, 'on_leave_' + e.src]:
-            if hasattr(obj, fnname):
-                return getattr(obj, fnname)(e)
+    def _leave_state(self, obj, e):
+        callbacks = ['onleave' + e.src, 'on_leave_' + e.src]
+        return self._do_callbacks(obj, callbacks, e)
 
-    @staticmethod
-    def _enter_state(obj, e):
-        for fnname in ['onenter' + e.dst, 'on' + e.dst,
-                       'on_enter_' + e.dst, 'on_' + e.dst]:
-            if hasattr(obj, fnname):
-                return getattr(obj, fnname)(e)
+    def _enter_state(self, obj, e):
+        callbacks = ['onenter' + e.dst, 'on' + e.dst,
+                     'on_enter_' + e.dst, 'on_' + e.dst]
+        return self._do_callbacks(obj, callbacks, e)
 
-    @staticmethod
-    def _reenter_state(obj, e):
-        for fnname in ['onreenter' + e.dst, 'on_reenter_' + e.dst]:
-            if hasattr(obj, fnname):
-                return getattr(obj, fnname)(e)
+    def _reenter_state(self, obj, e):
+        callbacks = ['onreenter' + e.dst, 'on_reenter_' + e.dst]
+        return self._do_callbacks(obj, callbacks, e)
 
-    @staticmethod
-    def _change_state(obj, e):
-        for fnname in ['onchangestate', 'on_change_state']:
-            if hasattr(obj, fnname):
-                return getattr(obj, fnname)(e)
+    def _change_state(self, obj, e):
+        callbacks = ['onchangestate', 'on_change_state']
+        return self._do_callbacks(obj, callbacks, e)
 
     def current(self, obj):
         return getattr(obj, self.state_field) or 'none'
