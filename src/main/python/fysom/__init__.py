@@ -173,6 +173,8 @@ class Fysom(object):
         '''
         return self.current == state
 
+    is_state = isstate
+
     def can(self, event):
         '''
             Returns if the given event be fired in the current machine state.
@@ -322,15 +324,16 @@ class Fysom(object):
         '''
             Checks to see if the callback is registered before this event can be triggered.
         '''
-        fnname = 'onbefore' + e.event
-        if hasattr(self, fnname):
-            return getattr(self, fnname)(e)
+        for fnname in ['onbefore' + e.event, 'on_before_' + e.event]:
+            if hasattr(self, fnname):
+                return getattr(self, fnname)(e)
 
     def _after_event(self, e):
         '''
             Checks to see if the callback is registered for, after this event is completed.
         '''
-        for fnname in ['onafter' + e.event, 'on' + e.event]:
+        for fnname in ['onafter' + e.event, 'on' + e.event,
+                       'on_after_' + e.event, 'on_' + e.event]:
             if hasattr(self, fnname):
                 return getattr(self, fnname)(e)
 
@@ -340,15 +343,16 @@ class Fysom(object):
             This is helpful if the asynchronous job needs to be completed before the machine can
             leave the current state.
         '''
-        fnname = 'onleave' + e.src
-        if hasattr(self, fnname):
-            return getattr(self, fnname)(e)
+        for fnname in ['onleave' + e.src, 'on_leave_' + e.src]:
+            if hasattr(self, fnname):
+                return getattr(self, fnname)(e)
 
     def _enter_state(self, e):
         '''
             Executes the callback for onenter_state_ or on_state_.
         '''
-        for fnname in ['onenter' + e.dst, 'on' + e.dst]:
+        for fnname in ['onenter' + e.dst, 'on' + e.dst,
+                       'on_enter_' + e.dst, 'on_' + e.dst]:
             if hasattr(self, fnname):
                 return getattr(self, fnname)(e)
 
@@ -357,17 +361,17 @@ class Fysom(object):
             Executes the callback for onreenter_state_.
             This allows callbacks following reflexive transitions (i.e. where src == dst)
         '''
-        fnname = 'onreenter' + e.dst
-        if hasattr(self, fnname):
-            return getattr(self, fnname)(e)
+        for fnname in ['onreenter' + e.dst, 'on_reenter_' + e.dst]:
+            if hasattr(self, fnname):
+                return getattr(self, fnname)(e)
 
     def _change_state(self, e):
         '''
             A general change state callback. This gets triggered at the time of state transition.
         '''
-        fnname = 'onchangestate'
-        if hasattr(self, fnname):
-            return getattr(self, fnname)(e)
+        for fnname in ['onchangestate', 'on_change_state']:
+            if hasattr(self, fnname):
+                return getattr(self, fnname)(e)
 
     def _is_base_string(self, object):  # pragma: no cover
         '''
@@ -475,7 +479,7 @@ class FysomGlobal(object):
             conditions = e.get('conditions')
             if conditions:
                 _e['conditions'] = _c = []
-                if self._is_base_string(conditions):
+                if self._is_base_string(conditions) or callable(conditions):
                     _c.append({True: conditions})
                 else:
                     for cond in conditions:
@@ -503,6 +507,7 @@ class FysomGlobal(object):
             e = self._e_obj()
             e.fsm, e.obj, e.event, e.src, e.dst = (
                 self, obj, event, self.current(obj), self._map[event]['dst'])
+            setattr(e, 'kwargs', kwargs)
             for k, v in kwargs.items():
                 setattr(e, k, v)
             setattr(e, 'args', args)
@@ -567,49 +572,55 @@ class FysomGlobal(object):
 
     @staticmethod
     def _check_condition(obj, func, target, e):
+        if callable(func):
+            return func(e) is target
         return getattr(obj, func)(e) is target
 
     @staticmethod
     def _before_event(obj, e):
-        fnname = 'onbefore' + e.event
-        if hasattr(obj, fnname):
-            return getattr(obj, fnname)(e)
+        for fnname in ['onbefore' + e.event, 'on_before_' + e.event]:
+            if hasattr(obj, fnname):
+                return getattr(obj, fnname)(e)
 
     @staticmethod
     def _after_event(obj, e):
-        for fnname in ['onafter' + e.event, 'on' + e.event]:
+        for fnname in ['onafter' + e.event, 'on' + e.event,
+                       'on_after_' + e.event, 'on_' + e.event]:
             if hasattr(obj, fnname):
                 return getattr(obj, fnname)(e)
 
     @staticmethod
     def _leave_state(obj, e):
-        fnname = 'onleave' + e.src
-        if hasattr(obj, fnname):
-            return getattr(obj, fnname)(e)
+        for fnname in ['onleave' + e.src, 'on_leave_' + e.src]:
+            if hasattr(obj, fnname):
+                return getattr(obj, fnname)(e)
 
     @staticmethod
     def _enter_state(obj, e):
-        for fnname in ['onenter' + e.dst, 'on' + e.dst]:
+        for fnname in ['onenter' + e.dst, 'on' + e.dst,
+                       'on_enter_' + e.dst, 'on_' + e.dst]:
             if hasattr(obj, fnname):
                 return getattr(obj, fnname)(e)
 
     @staticmethod
     def _reenter_state(obj, e):
-        fnname = 'onreenter' + e.dst
-        if hasattr(obj, fnname):
-            return getattr(obj, fnname)(e)
+        for fnname in ['onreenter' + e.dst, 'on_reenter_' + e.dst]:
+            if hasattr(obj, fnname):
+                return getattr(obj, fnname)(e)
 
     @staticmethod
     def _change_state(obj, e):
-        fnname = 'onchangestate'
-        if hasattr(obj, fnname):
-            return getattr(obj, fnname)(e)
+        for fnname in ['onchangestate', 'on_change_state']:
+            if hasattr(obj, fnname):
+                return getattr(obj, fnname)(e)
 
     def current(self, obj):
         return getattr(obj, self.state_field) or 'none'
 
     def isstate(self, obj, state):
         return self.current(obj) == state
+
+    is_state = isstate
 
     def can(self, obj, event):
         if event not in self._map or hasattr(obj, 'transition'):
