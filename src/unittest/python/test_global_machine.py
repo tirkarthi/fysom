@@ -275,7 +275,7 @@ class FysomGlobalTests(unittest.TestCase):
         gsm.startup(obj)
         gsm.calm(obj)
         gsm.clear(obj)
-        self.assertIn('function_callback', obj.logs)
+        self.assertTrue('function_callback' in obj.logs)
 
     def test_asynchronous_transition(self):
         def _func(event):
@@ -298,8 +298,8 @@ class FysomGlobalTests(unittest.TestCase):
         gsm.calm(obj)
         self.assertTrue(gsm.is_state(obj, 'red'))
         self.assertTrue(hasattr(obj, 'transition'))
-        self.assertNotIn('function_callback', obj.logs)
+        self.assertFalse('functioon_callback' in obj.logs)
         obj.transition()
         self.assertTrue(gsm.is_state(obj, 'yellow'))
         self.assertFalse(hasattr(obj, 'transition'))
-        self.assertIn('function_callback', obj.logs)
+        self.assertTrue('function_callback' in obj.logs)
