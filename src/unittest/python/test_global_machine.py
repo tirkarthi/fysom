@@ -70,6 +70,12 @@ class FysomGlobalTests(unittest.TestCase):
             def on_change_state(self, event):
                 self.logs.append('on_change_state')
 
+            def check_true(self, event):
+                return True
+
+            def check_false(self, event):
+                return False
+
         for _state in ('green', 'yellow', 'red'):
             for _at in ('enter', 'reenter', 'leave'):
                 attr_name = 'on_%s_%s' % (_at, _state)
@@ -303,3 +309,77 @@ class FysomGlobalTests(unittest.TestCase):
         self.assertTrue(gsm.is_state(obj, 'yellow'))
         self.assertFalse(hasattr(obj, 'transition'))
         self.assertTrue('function_callback' in obj.logs)
+
+    def test_transition_with_args_kwargs(self):
+        def _func(event):
+            self.assertTrue(hasattr(event, 'args'))
+            self.assertTrue(hasattr(event, 'kwargs'))
+            self.assertTrue(hasattr(event, 'msg'))
+            event.obj.logs.append('function_callback')
+
+        gsm = FysomGlobal(
+            events=[
+                ('calm', 'red', 'yellow'),
+                ('clear', 'yellow', 'green')],
+            callbacks={'on_after_startup': _func},
+            initial='red',
+            state_field='state'
+        )
+        obj = self.BaseModel()
+        gsm.startup(obj, msg='msg')
+        self.assertTrue('function_callback' in obj.logs)
+
+    def test_canceled_before_event_false(self):
+        gsm = FysomGlobal(
+            events=[
+                ('calm', 'red', 'yellow'),
+                ('clear', 'yellow', 'green')],
+            callbacks={'on_before_calm': lambda e: False},
+            initial='red',
+            state_field='state'
+        )
+        obj = self.BaseModel()
+        gsm.startup(obj)
+        self.assertRaises(Canceled, gsm.calm, obj)
+
+    def test_callable_or_basestring_condition(self):
+        gsm = FysomGlobal(
+            events=[
+                {
+                    'name': 'calm',
+                    'src': 'red',
+                    'dst': 'yellow',
+                    'cond': lambda e: True,
+                },
+                {
+                    'name': 'clear',
+                    'src': 'yellow',
+                    'dst': 'green',
+                    'cond': 'check_false'
+                }],
+            initial='red',
+            state_field='state'
+        )
+        obj = self.BaseModel()
+        gsm.startup(obj)
+        gsm.calm(obj)
+        self.assertTrue(gsm.is_state(obj, 'yellow'))
+        self.assertRaises(Canceled, gsm.clear, obj)
+        self.assertTrue(gsm.is_state(obj, 'yellow'))
+
+    def test_unknown_event(self):
+        obj = self.MixinModel()
+        self.assertFalse(obj.can('unknown_event'))
+        self.assertTrue(self.GSM.cannot(obj, 'unknown_event'))
+
+    def test_wildcard_src(self):
+        gsm = FysomGlobal(
+            events=[{'name': 'calm', 'dst': 'yellow'}],
+            initial='red',
+            state_field='state'
+        )
+        obj = self.BaseModel()
+        gsm.startup(obj)
+        self.assertTrue(gsm.is_state(obj, 'red'))
+        gsm.calm(obj)
+        self.assertTrue(gsm.is_state(obj, 'yellow'))

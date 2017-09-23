@@ -416,7 +416,7 @@ class FysomGlobalMixin(object):
                 gsm_attr = getattr(self.GSM, attr)
                 if callable(gsm_attr):
                     return functools.partial(gsm_attr, self)
-            raise
+            raise  # pragma: no cover
 
     @property
     def current(self):
@@ -612,7 +612,7 @@ class FysomGlobal(object):
                         )
 
             # try to trigger the before event, unless it gets cancelled.
-            if self._before_event(obj, e):
+            if self._before_event(obj, e) is False:
                 raise Canceled(
                     'Cannot trigger event {0} because the onbefore{0} '
                     'handler returns False'.format(event), e)
@@ -646,7 +646,7 @@ class FysomGlobal(object):
         pass
 
     @staticmethod
-    def _is_base_string(object):
+    def _is_base_string(object):  # pragma: no cover
         try:
             return isinstance(object, basestring)  # noqa
         except NameError:
