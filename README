@@ -383,7 +383,7 @@ give convenience access for the state machine methods.
 A use case is using with Django, which has a cache mechanism holds
 lots of model objects (database records) in memory, using global machine
 can save a lot of memory, `here is a
-compare` <https://github.com/pytransitions/transitions/issues/146#issuecomment-325190021>`_.
+compare <https://github.com/pytransitions/transitions/issues/146#issuecomment-325190021>`_.
 
 The basic usage is same with Fysom, with slit difference and enhancement:
 
@@ -394,3 +394,44 @@ The basic usage is same with Fysom, with slit difference and enhancement:
 - When an event/transition is canceled, the event object will be
   attached to the raised fysom.Canceled exception. By doing this,
   additional information can be passed through the exception.
+
+Usage example:
+::
+
+    class Model(FysomGlobalMixin, object):
+        GSM = FysomGlobal(
+            events=[('warn',  'green',  'yellow'),
+                    {
+                        'name': 'panic',
+                        'src': ['green', 'yellow'],
+                        'dst': 'red',
+                        'cond': [  # can be function object or method name
+                            'is_angry',  # by default target is "True"
+                            {True: 'is_very_angry', 'else': 'yellow'}
+                        ]
+                    },
+                    ('calm',  'red',    'yellow'),
+                    ('clear', 'yellow', 'green')],
+            initial='green',
+            final='red',
+            state_field='state'
+        )
+
+        def __init__(self):
+            self.state = None
+            super(Model, self).__init__()
+
+        def is_angry(self, event):
+            return True
+
+        def is_very_angry(self, event):
+            return False
+
+    obj = Model()
+    obj.current  # 'green'
+    obj.warn()
+    obj.is_state('yellow')  # True
+    # conditions and conditional transition
+    obj.panic()
+    obj.current  # 'yellow'
+    obj.is_finished()  # False
