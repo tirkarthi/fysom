@@ -480,9 +480,9 @@ class FysomGlobal(object):
                 src = [WILDCARD]
 
             _e = {'src': set(src), 'dst': e['dst']}
-            conditions = e.get('conditions')
+            conditions = e.get('cond')
             if conditions:
-                _e['conditions'] = _c = []
+                _e['cond'] = _c = []
                 if self._is_base_string(conditions) or callable(conditions):
                     _c.append({True: conditions})
                 else:
@@ -534,7 +534,7 @@ class FysomGlobal(object):
 
             # check conditions first, event dst may change during
             # checking conditions
-            for c in self._map[event].get('conditions', ()):
+            for c in self._map[event].get('cond', ()):
                 target = True in c
                 cond = c[target]
                 _c_r = self._check_condition(obj, cond, target, e)
