@@ -431,9 +431,71 @@ class FysomGlobalMixin(object):
 
 
 class FysomGlobal(object):
+    '''
+        Target to be used as global machine.
+    '''
 
     def __init__(self, cfg={}, initial=None, events=None, callbacks=None,
                  final=None, state_field=None, **kwargs):
+        '''
+        Construct a Global Finite State Machine.
+
+        Takes same arguments as Fysom and an additional state_field
+        to specify which field holds the state to be processed.
+
+        Difference with Fysom:
+
+        1.  Initial state will only be automatically triggered for class
+            derived with FysomGlobalMixin.
+        2.  Conditions and conditional transition are implemented.
+        3.  When an event/transition is canceled, the event object will
+            be attached to the raised Canceled exception. By doing this,
+            additional information can be passed through the exception.
+
+        Example:
+
+        class Model(FysomGlobalMixin, object):
+            GSM = FysomGlobal(
+                events=[('warn',  'green',  'yellow'),
+                        {
+                            'name': 'panic',
+                            'src': ['green', 'yellow'],
+                            'dst': 'red',
+                            'cond': [  # can be function object or method name
+                                'is_angry',  # by default target is "True"
+                                {True: 'is_very_angry', 'else': 'yellow'}
+                            ]
+                        },
+                        ('calm',  'red',    'yellow'),
+                        ('clear', 'yellow', 'green')],
+                initial='green',
+                final='red',
+                state_field='state'
+            )
+
+            def __init__(self):
+                self.state = None
+                super(Model, self).__init__()
+
+            def is_angry(self, event):
+                return True
+
+            def is_very_angry(self, event):
+                return False
+
+        >>> obj = Model()
+        >>> obj.current
+        'green'
+        >>> obj.warn()
+        >>> obj.is_state('yellow')
+        True
+        >>> obj.panic()
+        >>> obj.current
+        'yellow'
+        >>> obj.is_finished()
+        False
+
+        '''
         if sys.version_info[0] >= 3:
             super().__init__(**kwargs)
         cfg = dict(cfg)
