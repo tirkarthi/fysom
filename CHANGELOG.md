@@ -1,5 +1,8 @@
 Changelog for fysom
 --------------------
+* v2.1.5
+  Global machine and some improvements.
+  [Pull request](https://github.com/mriehl/fysom/pull/36) by [jxskiss](https://github.com/jxskiss)
 * v2.1.2
   Add special symbol for dst state equals to src state.
   Pull request by [irpab](https://github.com/irpab)
