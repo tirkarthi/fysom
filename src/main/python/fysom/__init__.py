@@ -27,11 +27,15 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-import collections
 import functools
 import weakref
 import types
 import sys
+
+try:
+    from collections.abc import Mapping
+except ImportError:
+    from collections import Mapping
 
 __author__ = 'Mansour Behabadi'
 __copyright__ = 'Copyright 2011, Mansour Behabadi and Jake Gordon'
@@ -159,7 +163,7 @@ class Fysom(object):
         # convert 3-tuples in the event specification to dicts
         events_dicts = []
         for e in cfg["events"]:
-            if isinstance(e, collections.Mapping):
+            if isinstance(e, Mapping):
                 events_dicts.append(e)
             elif hasattr(e, "__iter__"):
                 name, src, dst = list(e)[:3]
@@ -520,7 +524,7 @@ class FysomGlobal(object):
         # convert 3-tuples in the event specification to dicts
         events_dicts = []
         for e in cfg["events"]:
-            if isinstance(e, collections.Mapping):
+            if isinstance(e, Mapping):
                 events_dicts.append(e)
             elif hasattr(e, "__iter__"):
                 name, src, dst = list(e)[:3]
